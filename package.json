@@ -1,14 +1,24 @@
 {
-  "name": "og-inventory",
+  "name": "ogt_bas",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.3.2",
     "@testing-library/user-event": "^7.1.2",
-    "react": "^16.13.1",
-    "react-dom": "^16.13.1",
-    "react-scripts": "3.4.1"
+    "axios": "^0.19.2",
+    "indicative": "^7.4.4",
+    "jwt-decode": "^2.2.0",
+    "react": "^16.12.0",
+    "react-date-picker": "^7.10.0",
+    "react-dom": "^16.12.0",
+    "react-multistep": "^3.6.16",
+    "react-router-dom": "^5.1.2",
+    "react-scripts": "3.3.1",
+    "react-timekeeper": "^2.0.4",
+    "save": "^2.4.0",
+    "sequelize": "^5.21.3",
+    "uuid": "^3.4.0"
   },
   "scripts": {
     "start": "react-scripts start",
