@@ -1,5 +1,5 @@
 import React, { useState, Fragment } from 'react'
-
+import axios from "axios";
 const RegisterDevice = () => {  
     
     const [device, setDevice] = useState([{name: '', model: '', serialNo:'', color:'', image:'',quantity:''}])

@@ -1,6 +1,7 @@
 import React,  { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom';
 import EditProfile from '../employees/editProfile';
+import axios from "axios";
 const $ = window.$;
 const data = [
 {"name":"HP Yaris","assigned":false,"assigned_to":"Janet Wilber"},
@@ -33,10 +34,7 @@ const data = [
 {"name":"HP Endeavor","assigned":true,"assigned_to":"Wilmette O'Teague"},
 {"name":"HP 5000S","assigned":true,"assigned_to":"Alix Bigglestone"},
 {"name":"HP VUE","assigned":true,"assigned_to":"Andree Kennermann"}]
-const showEdit = () =>{
-    alert('HELLO')
-    return <EditProfile />
-}
+
 const Devices = () => {
     const [selectDevice, setselectDevice] = useState([])
     useEffect(() => {
