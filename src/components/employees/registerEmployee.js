@@ -39,22 +39,33 @@ const initalState = {
 const RegisterEmployee = () => {
 	let history = useHistory()
 	let token = localStorage.getItem('token')
+	console.log(token)
 	const [state, dispatch] = useReducer(registerReducer,initalState)
 	const {fullName,ogId,campaign,role,password,phone,email, error, success} = state
-	const onSubmit = async e =>{
+	const onSubmit =  e =>{
 		e.preventDefault();
 		const newEmployee = {fullName,ogId,campaign,role,password,phone,email}
 		console.log(newEmployee)
 		console.log(state)
-		try{
-			let user = await axios.post('https://shielded-plains-57822.herokuapp.com/users/register', newEmployee, {headers: {'Authorization': `Bearer ${token}`}})
-			console.log(user.data)
-			// dispatch({type: 'success', data : user.data})
+		const requestOptions = {
+			method: 'POST',
+			headers: {'Authorization': `Bearer ${token}`},
+			body: newEmployee
+		};
+		fetch('https://shielded-plains-57822.herokuapp.com/users/register', newEmployee, {headers: {'Authorization': `Bearer ${token}`}})
+		.then(res => {
+			console.log(res.data)
+		}).catch(error =>{
+			console.log(error.response.data.errors)
+		})
+	
+		// try{
+		// 	// dispatch({type: 'success', data : user.data})
 			
-		}catch(err){
-			console.log(err)
-			// dispatch({type: 'error', error: err})
-		}
+		// }catch(err){
+		// 	console.log(err)
+		// 	// dispatch({type: 'error', error: err})
+		// }
 	}
     return (
         <div id="wrapper" className="page-wrapper" style={{minHeight: "482px"}} >
@@ -142,9 +153,9 @@ const RegisterEmployee = () => {
 														  onChange={e => dispatch({type: 'inputChange', name: 'role',value: e.currentTarget.value})} 
 														  className="form-control" value={role} id="">
 															<option>Select Role</option>
-															<option>User</option>
-															<option>Admin</option>
-															<option>Super Admin</option>
+															<option>user</option>
+															<option>admin</option>
+															<option>employee</option>
 														  </select>
 														</div>
 												</div>
