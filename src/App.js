@@ -9,7 +9,7 @@ import adminDashboard from './components/dashboard/admin-dashboard';
 import employeeDashboard from './components/dashboard/employee-dashboard';
 import Employees from './components/employees/employees';
 import adminEmployees from './components/employees/adminEmployee';
-import registerEmployee from './components/employees/registerEmployee';
+import RegisterEmployee from './components/employees/registerEmployee';
 import employeeSetting from './components/employees/employeeSetting';
 import Devices from './components/Devices/devices';
 import RegisterDevice from './components/Devices/registerDevice';
@@ -33,7 +33,7 @@ const Main = withRouter(({ location }) => {
         <Route exact path="/devices" component={Devices} />
         <Route path="/all-employees" component={Employees} />
         <Route path="/admin" component={adminEmployees} />       
-        <Route path="/register-employee" component={registerEmployee} />       
+        <Route path="/register-employee" component={RegisterEmployee} />       
         <Route path="/employee-setting" component={employeeSetting} />       
         <Route path="/login" component={Login} />
       </Switch>

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect,useState } from 'react'
 import axios from "axios";
 const $ = window.$;
 var dataSet = [
@@ -41,7 +41,13 @@ var dataSet = [
 ];
 
 const  Employees = () => {
+	const [employees, setemployees] = useState([])
+	const getData = async() =>{
+		let all = axios.get('')
+		
+	}
     useEffect(() => {
+
        
         $('#example').DataTable( {
             data: dataSet,

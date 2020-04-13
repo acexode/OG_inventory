@@ -11,29 +11,28 @@ const Login  = () =>{
   
   return (
   <Formik
-    initialValues={{ ogId: "", password: "" }}
+    initialValues={{ email: "", password: "" }}
     onSubmit={(values, { setSubmitting }) => {
       setTimeout(() => {
         console.log("Logging in", values);
-        axios.post(``,  values )
+        axios.post(`https://shielded-plains-57822.herokuapp.com/users/login`,  values )
         .then(res => {
           console.log(res);
           console.log(res.data);
           let user = {username: res.data.user.username, id: res.data.user._id}
           localStorage.setItem("token", res.data.token)
           localStorage.setItem('user', JSON.stringify(user))
-            history.push('/chat',{user: res.data.user})
+            // history.push('/chat',{user: res.data.user})
         })	
         setSubmitting(false);
       }, 500);
     }}
     validationSchema={Yup.object().shape({
-      ogId: Yup.string()        
+      email: Yup.string()        
+        .email()
         .required("Required"),
       password: Yup.string()
-        .required("No password provided.")
-        .min(8, "Password is too short - should be 8 chars minimum.")
-        .matches(/(?=.*[0-9])/, "Password must contain a number.")
+        .required("No password provided.")        
     })}
   >
     {props => {
@@ -66,18 +65,18 @@ const Login  = () =>{
             
             <form onSubmit={handleSubmit}>
               <div className="form-group">
-                <label>OGID </label>
+                <label>Email </label>
                 <input 
-                name="ogId"
+                name="email"
                 type="text"
-                placeholder="Enter your OGID"
-                value={values.ogId}
+                placeholder="Enter your email"
+                value={values.email}
                 onChange={handleChange}
                 onBlur={handleBlur}
-                className={errors.ogId && touched.ogId && "error"}
+                className={errors.email && touched.email && "error"}
                 className="form-control" type="text" />
-                {errors.ogId && touched.ogId && (
-                  <div className="input-feedback">{errors.ogId}</div>
+                {errors.email && touched.email && (
+                  <div className="input-feedback">{errors.email}</div>
                 )}
               </div>
               <div className="form-group">
