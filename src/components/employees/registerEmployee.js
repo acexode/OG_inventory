@@ -38,16 +38,22 @@ const initalState = {
 }
 const RegisterEmployee = () => {
 	let history = useHistory()
+	let token = localStorage.getItem('token')
 	const [state, dispatch] = useReducer(registerReducer,initalState)
 	const {fullName,ogId,campaign,role,password,phone,email, error, success} = state
 	const onSubmit = async e =>{
 		e.preventDefault();
+		const newEmployee = {fullName,ogId,campaign,role,password,phone,email}
+		console.log(newEmployee)
+		console.log(state)
 		try{
-			let user = await axios.post('https://shielded-plains-57822.herokuapp.com/users/register')
-			dispatch({type: 'success', data : user.data})
+			let user = await axios.post('https://shielded-plains-57822.herokuapp.com/users/register', newEmployee, {headers: {'Authorization': `Bearer ${token}`}})
+			console.log(user.data)
+			// dispatch({type: 'success', data : user.data})
 			
 		}catch(err){
-			dispatch({type: 'error', error: err})
+			console.log(err)
+			// dispatch({type: 'error', error: err})
 		}
 	}
     return (
@@ -67,87 +73,88 @@ const RegisterEmployee = () => {
             <div className="row">
                     <div className="col-md-12" >
                     <div className="row">
-                    <form onClick={onSubmit} className="card" style={{margin:"30px auto", padding: '30px'}}>
+                    <form onSubmit={onSubmit} className="card" style={{margin:"30px auto", padding: '30px'}}>
 							{success && <p className="success">User Created</p> }
-							{error && <p className="error">{error}</p> }
-									<div class="row">
-										<div class="col-md-12">
+							{error && console.log(error) }
+									<div className="row">
+										<div className="col-md-12">
 										
-											<div class="row">
-												<div class="col-md-6">
-													<div class="form-group">
+											<div className="row">
+												<div className="col-md-6">
+													<div className="form-group">
 														<label>OGID</label>
 														<input 
 															type="text" 
 															onChange={e => dispatch({type: 'inputChange', name: 'ogId',value: e.currentTarget.value})} 
-															class="form-control"
+															className="form-control"
 															value={ogId}
 														  />
 													</div>
 												</div>
-												<div class="col-md-6">
-													<div class="form-group">
+												<div className="col-md-6">
+													<div className="form-group">
 														<label>Full Name</label>
 														<input 
 															type="text" 
 															onChange={e => dispatch({type: 'inputChange', name: 'fullName',value: e.currentTarget.value})} 
-															class="form-control"
+															className="form-control"
 															value={fullName}
 														  />
 													</div>
 												</div>
-												<div class="col-md-6">
-													<div class="form-group">
+												<div className="col-md-6">
+													<div className="form-group">
 														<label>Email</label>
 														<input 
 															type="text" 
 															onChange={e => dispatch({type: 'inputChange', name: 'email',value: e.currentTarget.value})} 
-															class="form-control"
+															className="form-control"
 															value={email}
 														  />
 													</div>
 												</div>
-												<div class="col-md-6">
-													<div class="form-group">
+												<div className="col-md-6">
+													<div className="form-group">
 														<label>Phone</label>
 														<input 
 															type="text" 
 															onChange={e => dispatch({type: 'inputChange', name: 'phone',value: e.currentTarget.value})} 
-															class="form-control"
+															className="form-control"
 															value={phone}
 														  />
 													</div>
 												</div>
-												<div class="col-md-6">
-													<div class="form-group">
+												<div className="col-md-6">
+													<div className="form-group">
 														<label>Campaign</label>
 														<input 
 															type="text" 
 															onChange={e => dispatch({type: 'inputChange', name: 'campaign',value: e.currentTarget.value})} 
-															class="form-control"
+															className="form-control"
 															value={campaign}
 														  />
 													</div>
 												</div>
-												<div class="col-md-6">
-													<div class="form-group">													
+												<div className="col-md-6">
+													<div className="form-group">													
 														  <label htmlFor="">Role</label>
 														  <select 
 														  onChange={e => dispatch({type: 'inputChange', name: 'role',value: e.currentTarget.value})} 
-														  class="form-control" value={role} id="">
+														  className="form-control" value={role} id="">
+															<option>Select Role</option>
 															<option>User</option>
 															<option>Admin</option>
 															<option>Super Admin</option>
 														  </select>
 														</div>
 												</div>
-												<div class="col-md-6">
-													<div class="form-group">
+												<div className="col-md-6">
+													<div className="form-group">
 														<label>Password</label>														
 														<input 
-															type="text" 
+															type="password" 
 															onChange={e => dispatch({type: 'inputChange', name: 'password',value: e.currentTarget.value})} 
-															class="form-control"
+															className="form-control"
 															value={password}
 														  />
 													</div>
@@ -157,8 +164,8 @@ const RegisterEmployee = () => {
 										</div>
 									</div>
 									
-									<div class="submit-section">
-										<button class="btn btn-primary submit-btn">Submit</button>
+									<div className="submit-section">
+										<button className="btn btn-primary submit-btn">Submit</button>
 									</div>
 								</form>
                     </div>

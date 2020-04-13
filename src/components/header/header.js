@@ -1,11 +1,14 @@
 import React from 'react';
  import './header.css'
  import logo from '../../assets/outsource-logo-square.png'
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 
 const Header = () =>{
-    const logout = () =>{
-
+	let history = useHistory()
+	const logout = () =>{
+        localStorage.removeItem('token')
+        localStorage.removeItem('user')
+        history.push('/login')
     }
     return (
 

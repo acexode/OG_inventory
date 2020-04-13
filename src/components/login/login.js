@@ -22,7 +22,7 @@ const Login  = () =>{
           let user = {username: res.data.user.username, id: res.data.user._id}
           localStorage.setItem("token", res.data.token)
           localStorage.setItem('user', JSON.stringify(user))
-            // history.push('/chat',{user: res.data.user})
+          history.push('/',{user: res.data.user})
         })	
         setSubmitting(false);
       }, 500);
