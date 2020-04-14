@@ -36,8 +36,14 @@ const data = [
 {"name":"HP VUE","assigned":true,"assigned_to":"Andree Kennermann"}]
 
 const Devices = () => {
+    let token = localStorage.getItem('token')
     const [selectDevice, setselectDevice] = useState([])
     useEffect(() => {
+
+        axios.get('https://shielded-plains-57822.herokuapp.com/devices', {headers: {'Authorization': `Bearer ${token}`}} )
+        .then(res =>{
+            console.log(res.data)
+        })
         $(document).ready(function() {
             let arr = data.map(e => Object.values(e))
             console.log(arr)
@@ -57,15 +63,15 @@ const Devices = () => {
                     "columnDefs": [ {
                         "targets": -1,
                         "data": null,
-                        "defaultContent": `<div class="dropdown show">
+                        "defaultContent": `<div className="dropdown show">
                        
-                        <a class="" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        <i class="las la-ellipsis-v"></i>
+                        <a className="" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <i className="las la-ellipsis-v"></i>
                         </a>                      
-                        <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                        <div className="dropdown-menu" aria-labelledby="dropdownMenuLink">
                              
-                          <a id="showEdit" class="dropdown-item" href="#" data-toggle="modal" data-target="#exampleModal">Edit</a>
-                          <a class="dropdown-item" data-toggle="modal" data-target="#AssignDevice"  href="#">Assign device</a>
+                          <a id="showEdit" className="dropdown-item" href="#" data-toggle="modal" data-target="#exampleModal">Edit</a>
+                          <a className="dropdown-item" data-toggle="modal" data-target="#AssignDevice"  href="#">Assign device</a>
                          
                         </div>
                       </div>`
@@ -116,41 +122,41 @@ const Devices = () => {
             </div>
       
 
-            <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">               
-                <div class="modal-body">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <div className="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div className="modal-dialog" role="document">
+                <div className="modal-content">               
+                <div className="modal-body">
+                    <button type="button" className="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                     </button>
                 <form  style={{marginTop:"30px" }}>
-                    <h5 class="text-center" id="exampleModalLabel mb-4">Edit Device</h5>                   
-									<div class="row mt-5">
-										<div class="col-md-12">
+                    <h5 className="text-center" id="exampleModalLabel mb-4">Edit Device</h5>                   
+									<div className="row mt-5">
+										<div className="col-md-12">
 										
-											<div class="row">
-												<div class="col-md-6">
-													<div class="form-group">
+											<div className="row">
+												<div className="col-md-6">
+													<div className="form-group">
 														<label>Device Id</label>
-														<input type="text" class="form-control" value="" />
+														<input type="text" className="form-control" value="" />
 													</div>
 												</div>
-												<div class="col-md-6">
-													<div class="form-group">
+												<div className="col-md-6">
+													<div className="form-group">
 														<label>Device Name</label>
-														<input type="text" class="form-control" value={selectDevice[0]} />
+														<input type="text" className="form-control" value={selectDevice[0]} />
 													</div>
 												</div>
-												<div class="col-md-6">
-													<div class="form-group">
+												<div className="col-md-6">
+													<div className="form-group">
 														<label>Assigned</label>
-														<input type="text" class="form-control" value={selectDevice[1]} />
+														<input type="text" className="form-control" value={selectDevice[1]} />
 													</div>
 												</div>
-												<div class="col-md-6">
-													<div class="form-group">
+												<div className="col-md-6">
+													<div className="form-group">
 														<label>Assign to</label>														
-															<input class="form-control " type="text" value={selectDevice[2]} />
+															<input className="form-control " type="text" value={selectDevice[2]} />
 													</div>
 												</div>
 												
@@ -158,8 +164,8 @@ const Devices = () => {
 										</div>
 									</div>
 									
-									<div class="submit-section">
-										<button class="btn btn-primary submit-btn">Submit</button>
+									<div className="submit-section">
+										<button className="btn btn-primary submit-btn">Submit</button>
 									</div>
 								</form>
                 </div>               
@@ -167,36 +173,36 @@ const Devices = () => {
             </div>
             </div>
 
-            <div class="row">                
-            <div class="modal fade" id="AssignDevice" tabindex="-1" role="dialog" aria-labelledby="AssignDeviceLabel" aria-hidden="true">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">               
-                <div class="modal-body">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <div className="row">                
+            <div className="modal fade" id="AssignDevice" tabindex="-1" role="dialog" aria-labelledby="AssignDeviceLabel" aria-hidden="true">
+            <div className="modal-dialog" role="document">
+                <div className="modal-content">               
+                <div className="modal-body">
+                    <button type="button" className="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                     </button>
                 <form  style={{marginTop:"30px" }}>
-                    <h5 class="text-center" id="exampleModalLabel mb-4">Assign Device</h5>                   
-									<div class="row mt-5">
-										<div class="col-md-12">
+                    <h5 className="text-center" id="exampleModalLabel mb-4">Assign Device</h5>                   
+									<div className="row mt-5">
+										<div className="col-md-12">
 										
-											<div class="row">
-												<div class="col-md-6">
-													<div class="form-group">
+											<div className="row">
+												<div className="col-md-6">
+													<div className="form-group">
 														<label>Employee OGID</label>
-														<input type="text" class="form-control" value="" />
+														<input type="text" className="form-control" value="" />
 													</div>
 												</div>
-												<div class="col-md-6">
-													<div class="form-group">
+												<div className="col-md-6">
+													<div className="form-group">
 														<label>Employee FullName</label>
-														<input type="text" class="form-control" value="" />
+														<input type="text" className="form-control" value="" />
 													</div>
 												</div>												
-												<div class="col-md-6">
-													<div class="form-group">
+												<div className="col-md-6">
+													<div className="form-group">
 														<label>Device ID</label>														
-															<input class="form-control " type="text" value={selectDevice[2]} />
+															<input className="form-control " type="text" value={selectDevice[2]} />
 													</div>
 												</div>
 												
@@ -204,8 +210,8 @@ const Devices = () => {
 										</div>
 									</div>
 									
-									<div class="submit-section">
-										<button class="btn btn-primary submit-btn">Submit</button>
+									<div className="submit-section">
+										<button className="btn btn-primary submit-btn">Submit</button>
 									</div>
 								</form>
                 </div>               

@@ -19,9 +19,9 @@ const Login  = () =>{
         .then(res => {
           console.log(res);
           console.log(res.data);
-          let user = {username: res.data.user.username, id: res.data.user._id}
+          let user = {fullName: res.data.user.fullName, id: res.data.user._id}
           localStorage.setItem("token", res.data.token)
-          localStorage.setItem('user', JSON.stringify(user))
+          localStorage.setItem('user', JSON.stringify(res.data.user))
           history.push('/',{user: res.data.user})
         })	
         setSubmitting(false);
