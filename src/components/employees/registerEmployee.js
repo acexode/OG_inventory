@@ -2,6 +2,7 @@ import React, {useReducer} from 'react'
 import axios from 'axios'
 import { useHistory } from 'react-router-dom'
 const registerReducer = (state, action) =>{
+	// eslint-disable-next-line default-case
 	switch(action.type){
 		case 'inputChange' : {
 			return {
@@ -12,13 +13,21 @@ const registerReducer = (state, action) =>{
 		case 'error' : {
 			return {
 				...state,
-				error: action.error
+				error: true
 			}
 		}
 		case 'success' : {
 			return {
 				...state,
-				error: action.data
+				fullName: "", 
+				ogId: "", 
+				campaign: "", 
+				role: "", 
+				password: "", 
+				phone: "", 
+				email: "" ,	
+				success: true,
+				saved: false
 			}
 		}
 	}
@@ -31,10 +40,8 @@ const initalState = {
 	password: "", 
 	phone: "", 
 	email: "" ,
-	error: "",
-	success: "",
-
-
+	error: false,
+	success: false,
 }
 const RegisterEmployee = () => {
 	let history = useHistory()
@@ -42,30 +49,26 @@ const RegisterEmployee = () => {
 	console.log(token)
 	const [state, dispatch] = useReducer(registerReducer,initalState)
 	const {fullName,ogId,campaign,role,password,phone,email, error, success} = state
-	const onSubmit =  e =>{
+	const onSubmit = async e =>{
 		e.preventDefault();
-		const newEmployee = {fullName,ogId,campaign,role,password,phone,email}
-		console.log(newEmployee)
-		console.log(state)
-		const requestOptions = {
-			method: 'POST',
-			headers: {'Authorization': `Bearer ${token}`},
-			body: newEmployee
-		};
-		fetch('https://shielded-plains-57822.herokuapp.com/users/register', newEmployee, {headers: {'Authorization': `Bearer ${token}`}})
-		.then(res => {
-			console.log(res.data)
-		}).catch(error =>{
-			console.log(error.response.data.errors)
-		})
-	
-		// try{
-		// 	// dispatch({type: 'success', data : user.data})
-			
-		// }catch(err){
-		// 	console.log(err)
-		// 	// dispatch({type: 'error', error: err})
-		// }
+		const newEmployee =  {
+		"fullName": fullName,
+		"ogId": ogId,
+		"campaign": campaign,
+		"role": role,
+		"phone": phone,
+		"email": email,
+		"password": password
+	}
+		console.log(newEmployee)		
+		try{
+			let user = await axios.post('https://shielded-plains-57822.herokuapp.com/users/register',newEmployee, {headers: {'Authorization': `Bearer ${token}`}})
+			console.log(user.data)			
+			 dispatch({type: 'success'})
+		}catch(err){
+			console.log(err)
+			dispatch({type: 'error'})
+		}
 	}
     return (
         <div id="wrapper" className="page-wrapper" style={{minHeight: "482px"}} >
@@ -84,12 +87,11 @@ const RegisterEmployee = () => {
             <div className="row">
                     <div className="col-md-12" >
                     <div className="row">
+							{success && <div className="alert  alert-success" style={{width:'100%'}}>User Successfully Created</div> }
+							{error &&  <div className="alert  alert-success" style={{width:'100%'}}>Unable to save user</div> }
                     <form onSubmit={onSubmit} className="card" style={{margin:"30px auto", padding: '30px'}}>
-							{success && <p className="success">User Created</p> }
-							{error && console.log(error) }
 									<div className="row">
 										<div className="col-md-12">
-										
 											<div className="row">
 												<div className="col-md-6">
 													<div className="form-group">
@@ -155,7 +157,7 @@ const RegisterEmployee = () => {
 															<option>Select Role</option>
 															<option>user</option>
 															<option>admin</option>
-															<option>employee</option>
+												
 														  </select>
 														</div>
 												</div>
@@ -170,23 +172,18 @@ const RegisterEmployee = () => {
 														  />
 													</div>
 												</div>
-												
 											</div>
 										</div>
 									</div>
-									
 									<div className="submit-section">
 										<button className="btn btn-primary submit-btn">Submit</button>
 									</div>
 								</form>
                     </div>
-                                 
-               
                 </div>
             </div>
         </div>
     </div>
     )
 }
-
 export default RegisterEmployee
