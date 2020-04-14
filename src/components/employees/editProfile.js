@@ -1,47 +1,102 @@
-import React from 'react'
+import React,{useState} from 'react'
+import axios from 'axios'
+import {getUser,getUserId,getToken,getUserName,getOgid} from "../../helpers/userToken"
 
 const EditProfile = () => {
+	const userId = getUserId()
+	const token = getToken()
+	const userName = getUserName()
+	const ogid = getOgid()
+	console.log(userId)
+
+	const [password, setPassword] = useState('')
+	const [message, setMessage] = useState('')
+	const [show, setShow] = useState(false)
+	const [alert_type, setAlertType] = useState('success')
+
+
+	const handlePasswordChange =(event) =>{
+		const {value} = event.target
+		setPassword(value)
+	}
+
+		const handleSubmit=(event)=>{
+			event.preventDefault()
+			if( password === ''){
+				setShow(true)
+				setTimeout(() =>{
+					setShow(false)
+				}, 3000)
+				setAlertType("warning")
+				setMessage("Fields cannot be empty")
+			}
+			else{
+				let user ={
+					password
+				}
+				axios.post(`https://shielded-plains-57822.herokuapp.com/users/${userId}`, user, {headers: {'Authorization': `Bearer ${token}`}})
+				.then(res =>{
+					console.log(res)
+					  setShow(true)
+					  setTimeout(() =>{
+						  setShow(false)
+					  }, 3000)
+					setAlertType("success")
+					setMessage("Profile updated successfully")
+				})
+				.catch(err =>{
+					setShow(true)
+					setTimeout(() =>{
+						setShow(false)
+					}, 3000)
+					setAlertType("danger")
+					setMessage("Profile not updated")
+					console.log(err)
+				})
+
+			}
+			// console.log(user)
+		}
     return (
         <>         
 
-<div class="pro-edit"><a data-toggle="modal" data-target="#exampleModal" class="edit-icon" href="#"><i class="fa fa-pencil"></i></a></div>
+<div className="pro-edit"><a data-toggle="modal" data-target="#exampleModal" className="edit-icon" href="#"><i className="fa fa-pencil"></i></a></div>
 
-<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
+<div className="modal fade" id="exampleModal" tabIndex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div className="modal-dialog" role="document">
+    <div className="modal-content">
      
-      <div class="modal-body">
-      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+	{show ? ( <div className={`alert alert-${alert_type} alert-dismissible fade show`} role="alert">
+						<p>{message}</p>
+		</div>) : (<div></div>)}		
+
+      <div className="modal-body">
+      <button type="button" className="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
-      <form  style={{marginTop:"30px" }}>
-      <h5 class="text-center" id="exampleModalLabel mb-4">Edit Profile</h5>
-									<div class="row mt-5">
-										<div class="col-md-12">
+      <form  style={{marginTop:"30px" }} onSubmit={handleSubmit}>
+      <h5 className="text-center" id="exampleModalLabel mb-4">Edit Profile</h5>
+									<div className="row mt-5">
+										<div className="col-md-12">
 										
-											<div class="row">
-												<div class="col-md-6">
-													<div class="form-group">
+											<div className="row">
+												<div className="col-md-6">
+													<div className="form-group">
 														<label>OGID</label>
-														<input type="text" class="form-control" value="" />
+														<input type="text" readOnly className="form-control" value={ogid}  />
 													</div>
 												</div>
-												<div class="col-md-6">
-													<div class="form-group">
-														<label>First Name</label>
-														<input type="text" class="form-control" value="" />
+												<div className="col-md-6">
+													<div className="form-group">
+														<label>Full Name</label>
+														<input type="text" readOnly className="form-control" value={userName}  />
 													</div>
 												</div>
-												<div class="col-md-6">
-													<div class="form-group">
-														<label>Last Name</label>
-														<input type="text" class="form-control" value="" />
-													</div>
-												</div>
-												<div class="col-md-6">
-													<div class="form-group">
+										
+												<div className="col-md-6">
+													<div className="form-group">
 														<label>Password</label>														
-															<input class="form-control " type="text" value="" />
+															<input className="form-control " type="text" value={password} onChange={handlePasswordChange} />
 													</div>
 												</div>
 												
@@ -49,8 +104,8 @@ const EditProfile = () => {
 										</div>
 									</div>
 									
-									<div class="submit-section">
-										<button class="btn btn-primary submit-btn">Submit</button>
+									<div className="submit-section">
+										<button className="btn btn-primary submit-btn">Submit</button>
 									</div>
 								</form>
       </div>

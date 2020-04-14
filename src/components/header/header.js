@@ -2,8 +2,10 @@ import React from 'react';
  import './header.css'
  import logo from '../../assets/outsource-logo-square.png'
 import { Link, useHistory } from 'react-router-dom';
+import {getRole} from "../../helpers/userToken"
 
 const Header = () =>{
+	const role =getRole()
 	let history = useHistory()
 	const logout = () =>{
         localStorage.removeItem('token')
@@ -48,13 +50,11 @@ const Header = () =>{
 
 					<li className="nav-item dropdown has-arrow main-drop show ml-3">
 						<a href="#" className="dropdown-toggle nav-link" data-toggle="dropdown" aria-expanded="true">
-							<span className="user-img"><img src="https://ca.slack-edge.com/TQHUN32CR-URMJFALDP-cddc940f0228-72" alt="" />
-							<span className="status online"></span></span>
-							<span>Admin</span>
+							<span className="status online "></span>
+							<span className="pl-3">{role.toUpperCase()}</span>
 						</a>
 						<div className="dropdown-menu show" x-placement="bottom-start" style={{position: 'absolute', willChange: 'transform', top: '0px', left: '0px', transform: 'translate3d(-11px, 60px, 0px)'}}>
 							<Link className="dropdown-item" to="/profile">My Profile</Link>
-							<Link className="dropdown-item" to="/user-settings">Settings</Link>
 							<a onClick={logout} className="dropdown-item" href="#">Logout</a>
 						</div>
 					</li>

@@ -5,8 +5,8 @@ import Login from './components/login/login';
 import {Switch, Route, withRouter, BrowserRouter } from "react-router-dom";
 import Header from './components/header/header';
 import Sidebar from './components/sidebar/sidebar';
-import adminDashboard from './components/dashboard/admin-dashboard';
-import employeeDashboard from './components/dashboard/employee-dashboard';
+import AdminDashboard from './components/dashboard/admin-dashboard';
+import EmployeeDashboard from './components/dashboard/employee-dashboard';
 import Employees from './components/employees/employees';
 import adminEmployees from './components/employees/adminEmployee';
 import RegisterEmployee from './components/employees/registerEmployee';
@@ -14,6 +14,7 @@ import employeeSetting from './components/employees/employeeSetting';
 import Devices from './components/Devices/devices';
 import RegisterDevice from './components/Devices/registerDevice';
 import AuthGuard from './components/login/AuthGuard';
+import {EmployeeProvider} from  "./components/EmployeeContext/EmployeeContext"
 
 
 const Main = withRouter(({ location }) => {
@@ -27,10 +28,10 @@ const Main = withRouter(({ location }) => {
         </>
       )}
       <Switch>  
-        <AuthGuard exact path="/" component={adminDashboard} />     
-        <AuthGuard exact path="/admin-dashboard" component={adminDashboard} />
-        <AuthGuard exact path="/employee-dashboard" component={employeeDashboard} />
-        <AuthGuard exact path="/employee-dashboard" component={employeeDashboard} />
+        <EmployeeProvider>
+        <AuthGuard exact path="/" component={AdminDashboard} />     
+        <AuthGuard exact path="/admin-dashboard" component={AdminDashboard} />
+        <AuthGuard exact path="/employee-dashboard" component={EmployeeDashboard} />
         <AuthGuard exact path="/register-device" component={RegisterDevice} />
         <AuthGuard exact path="/devices" component={Devices} />
         <AuthGuard path="/all-employees" component={Employees} />
@@ -38,7 +39,7 @@ const Main = withRouter(({ location }) => {
         <AuthGuard path="/register-employee" component={RegisterEmployee} />       
         <AuthGuard path="/employee-setting" component={employeeSetting} />       
         <Route path="/login" component={Login} />
-       
+        </EmployeeProvider>
         
       </Switch>
     </>
