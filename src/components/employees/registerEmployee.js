@@ -42,8 +42,6 @@ const initalState = {
 	email: "" ,
 	error: false,
 	success: false,
-
-
 }
 const RegisterEmployee = () => {
 	let history = useHistory()
@@ -51,7 +49,6 @@ const RegisterEmployee = () => {
 	console.log(token)
 	const [state, dispatch] = useReducer(registerReducer,initalState)
 	const {fullName,ogId,campaign,role,password,phone,email, error, success} = state
-
 	const onSubmit = async e =>{
 		e.preventDefault();
 		const newEmployee =  {
@@ -67,9 +64,7 @@ const RegisterEmployee = () => {
 		try{
 			let user = await axios.post('https://shielded-plains-57822.herokuapp.com/users/register',newEmployee, {headers: {'Authorization': `Bearer ${token}`}})
 			console.log(user.data)			
-
 			 dispatch({type: 'success'})
-			
 		}catch(err){
 			console.log(err)
 			dispatch({type: 'error'})
@@ -97,7 +92,6 @@ const RegisterEmployee = () => {
                     <form onSubmit={onSubmit} className="card" style={{margin:"30px auto", padding: '30px'}}>
 									<div className="row">
 										<div className="col-md-12">
-										
 											<div className="row">
 												<div className="col-md-6">
 													<div className="form-group">
@@ -163,7 +157,7 @@ const RegisterEmployee = () => {
 															<option>Select Role</option>
 															<option>user</option>
 															<option>admin</option>
-															<option>employee</option>
+												
 														  </select>
 														</div>
 												</div>
@@ -178,23 +172,18 @@ const RegisterEmployee = () => {
 														  />
 													</div>
 												</div>
-												
 											</div>
 										</div>
 									</div>
-									
 									<div className="submit-section">
 										<button className="btn btn-primary submit-btn">Submit</button>
 									</div>
 								</form>
                     </div>
-                                 
-               
                 </div>
             </div>
         </div>
     </div>
     )
 }
-
 export default RegisterEmployee

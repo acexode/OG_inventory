@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component,useState,useContext } from 'react';
 import logo from '../../assets/outsource-logo-square.png';
 import './login.css'
 import axios from "axios";
@@ -8,7 +8,8 @@ import { useHistory } from 'react-router-dom';
 
 const Login  = () =>{
   let history = useHistory()
-  
+  const [message,setMessage] = useState('')
+  const [show,setShow] = useState(false)
   return (
   <Formik
     initialValues={{ email: "", password: "" }}
@@ -21,8 +22,22 @@ const Login  = () =>{
           console.log(res.data);
           let user = {fullName: res.data.user.fullName, id: res.data.user._id}
           localStorage.setItem("token", res.data.token)
-          localStorage.setItem('user', JSON.stringify(res.data.user))
-          history.push('/',{user: res.data.user})
+          localStorage.setItem('user', JSON.stringify(user))
+          localStorage.setItem('userId', res.data.user._id)
+          localStorage.setItem('userOgid', res.data.user.ogId)
+          localStorage.setItem('userName', res.data.user.fullName)
+          localStorage.setItem('role', res.data.user.role)
+          localStorage.setItem('campaign', res.data.user.campaign)
+          localStorage.setItem('email', res.data.user.email)
+          localStorage.setItem('phone', res.data.user.phone)
+          // localStorage.setItem("user", res.data.user)
+          history.push('/employee-dashboard',{user: res.data.user})
+       
+        })
+        .catch(err =>{
+          console.log(err.response.data.msg)
+          setShow(true)
+          setMessage(err.response.data.msg)
         })	
         setSubmitting(false);
       }, 500);
@@ -55,7 +70,14 @@ const Login  = () =>{
         <div className="account-logo">
           <a href="index.html"><img src={logo} alt="Outsource Global Technologies" /></a>
         </div>
-        
+      { show ? ( 
+        <div className="alert alert-danger alert-dismissible fade show" role="alert">
+         {message}
+          <button type="button" className="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>): (<div></div>)
+    }
         
         <div className="account-box">
           <div className="account-wrapper">
