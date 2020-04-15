@@ -46,18 +46,20 @@ const Header = () =>{
 								<button className="btn" type="submit"><i className="fa fa-search"></i></button>
 							</form>
 						</div>
-					</li>				
-
-					<li className="nav-item dropdown has-arrow main-drop show ml-3">
-						<a href="#" className="dropdown-toggle nav-link" data-toggle="dropdown" aria-expanded="true">
-							<span className="status online "></span>
-							<span className="pl-3">{role.toUpperCase()}</span>
+					</li>	
+					<li class="nav-item dropdown has-arrow main-drop ml-3">
+						<a href="#" class="dropdown-toggle nav-link" data-toggle="dropdown">
+							<span class="user-img"><img src="https://ca.slack-edge.com/TQHUN32CR-URMJF95Q9-g044a9fdcae7-512" alt="" />
+							<span class="status online"></span></span>
+							<span>{role[0].toUpperCase() + role.slice(1)}</span>
 						</a>
-						<div className="dropdown-menu show" x-placement="bottom-start" style={{position: 'absolute', willChange: 'transform', top: '0px', left: '0px', transform: 'translate3d(-11px, 60px, 0px)'}}>
-							<Link className="dropdown-item" to="/profile">My Profile</Link>
+						<div class="dropdown-menu">
+						<Link className="dropdown-item" to="/profile">My Profile</Link>
 							<a onClick={logout} className="dropdown-item" href="#">Logout</a>
 						</div>
-					</li>
+					</li>			
+
+				
 				</ul>			
 				<div className="dropdown mobile-user-menu">
 					<a href="#" className="nav-link dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i className="fa fa-ellipsis-v"></i></a>
