@@ -15,6 +15,7 @@ import Devices from './components/Devices/devices';
 import RegisterDevice from './components/Devices/registerDevice';
 import AuthGuard from './components/login/AuthGuard';
 import {EmployeeProvider} from  "./components/EmployeeContext/EmployeeContext"
+import {DeviceProvider} from  "./components/DeviceContext/DeviceContext"
 
 
 const Main = withRouter(({ location }) => {
@@ -28,18 +29,21 @@ const Main = withRouter(({ location }) => {
         </>
       )}
       <Switch>  
-        <EmployeeProvider>
-        <AuthGuard exact path="/" component={AdminDashboard} />     
-        <AuthGuard exact path="/admin-dashboard" component={AdminDashboard} />
-        <AuthGuard exact path="/employee-dashboard" component={EmployeeDashboard} />
-        <AuthGuard exact path="/register-device" component={RegisterDevice} />
-        <AuthGuard exact path="/devices" component={Devices} />
-        <AuthGuard path="/all-employees" component={Employees} />
-        <AuthGuard path="/admin" component={adminEmployees} />       
-        <AuthGuard path="/register-employee" component={RegisterEmployee} />       
-        <AuthGuard path="/employee-setting" component={employeeSetting} />       
-        <Route path="/login" component={Login} />
-        </EmployeeProvider>
+        <DeviceProvider>
+          <EmployeeProvider>
+          <AuthGuard exact path="/" component={AdminDashboard} />     
+          <AuthGuard exact path="/admin-dashboard" component={AdminDashboard} />
+          <AuthGuard exact path="/employee-dashboard" component={EmployeeDashboard} />
+          <AuthGuard exact path="/register-device" component={RegisterDevice} />
+          <AuthGuard exact path="/devices" component={Devices} />
+          <AuthGuard path="/all-employees" component={Employees} />
+          <AuthGuard path="/admin" component={adminEmployees} />       
+          <AuthGuard path="/register-employee" component={RegisterEmployee} />       
+          <AuthGuard path="/employee-setting" component={employeeSetting} />       
+          <Route path="/login" component={Login} />
+          </EmployeeProvider>
+
+        </DeviceProvider>
         
       </Switch>
     </>

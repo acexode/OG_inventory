@@ -65,12 +65,6 @@ $(document).ready(function() {
 	
 	// Select 2
 	
-	if($('.select').length > 0) {
-		$('.select').select2({
-			minimumResultsForSearch: -1,
-			width: '100%'
-		});
-	}
 	
 	// Modal Popup hide show
 
@@ -128,57 +122,7 @@ $(document).ready(function() {
 		$pageWrapper.css('min-height', prHeight);
 	});
 	
-	// Date Time Picker
-	
-	if($('.datetimepicker').length > 0) {
-		$('.datetimepicker').datetimepicker({
-			format: 'DD/MM/YYYY',
-			icons: {
-				up: "fa fa-angle-up",
-				down: "fa fa-angle-down",
-				next: 'fa fa-angle-right',
-				previous: 'fa fa-angle-left'
-			}
-		});
-	}
-	
-	// Datatable
 
-	if($('.datatable').length > 0) {
-		$('.datatable').DataTable({
-			"bFilter": false,
-		});
-	}
-	
-	// Tooltip
-
-	if($('[data-toggle="tooltip"]').length > 0) {
-		$('[data-toggle="tooltip"]').tooltip();
-	}
-	
-	// Email Inbox
-
-	if($('.clickable-row').length > 0 ){
-		$(".clickable-row").click(function() {
-			window.location = $(this).data("href");
-		});
-	}
-
-
-
-	
-	// OTP Input
-	
-	if ($('.otp-input').length > 0) {
-		$(".otp-input").keyup(function(e) {
-			if ((e.which >= 48 && e.which <= 57) || (e.which >= 96 && e.which <= 105)) {
-				$(e.target).next('.otp-input').focus();
-			} else if (e.which == 8) {
-				$(e.target).prev('.otp-input').focus();
-			}
-		});
-	}
-	
 	// Small Sidebar
 
 	$(document).on('click', '#toggle_btn', function() {
