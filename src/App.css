@@ -1,0 +1,12 @@
+.bg-inverse-success {
+    background-color: rgba(15, 183, 107,0.12) !important;
+    color: #26af48 !important;
+}
+.bg-inverse-danger {
+    background-color: rgba(242, 17, 54,0.12) !important;
+    color: #e63c3c !important;
+}
+.bg-inverse-info {
+    background-color: #fff3cd !important;
+	color: #856404 !important;
+}
