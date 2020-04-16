@@ -11,7 +11,11 @@ const  Employees = () => {
     const allDevices = users.map(user => Object.values(user).slice(1))
     const [selectDevice, setselectDevice] = useState([])
 	console.log(allDevices)
-
+	const handleSubmit=(event)=>{
+		event.preventDefault()
+		console.log(selectDevice)
+		
+	}
     useEffect(() => {
         let table = $('#example').DataTable( {
             data: allDevices,
@@ -41,12 +45,16 @@ const  Employees = () => {
       
         console.log(table)
         $('#example tbody #showEdit').on( 'click', function () {               
-            var data = table.row( $(this).parents('tr') ).data();
+			var data = table.row( $(this).parents('tr') ).data();
+			console.log(table.row( $(this).parents('tr') ).index())
+			console.log(data)
             setselectDevice(data)
                             
         } );
         $('#example tbody #AssignDevice').on( 'click', function () {              
-            var data = table.row( $(this).parents('tr') ).data();
+			var data = table.row( $(this).parents('tr') ).data();
+			console.log(table.row( $(this).parents('tr') ).index())
+			console.log(data)
             setselectDevice(data)
         } );
                     
@@ -141,7 +149,7 @@ const  Employees = () => {
                     <button type="button" className="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                     </button>
-                <form  style={{marginTop:"30px" }}>
+                <form onSubmit={handleSubmit} style={{marginTop:"30px" }}>
                     <h5 className="text-center" id="exampleModalLabel mb-4">Assign Device</h5>                   
 									<div className="row mt-5">
 										<div className="col-md-12">
@@ -162,7 +170,7 @@ const  Employees = () => {
 												<div className="col-md-6">
 													<div className="form-group">
 														<label>Device ID</label>														
-															<input className="form-control " type="text" value={selectDevice[2]} />
+															<input className="form-control " type="text" value={selectDevice[5]} />
 													</div>
 												</div>
 												
