@@ -1,16 +1,79 @@
-import React, { useEffect,useState,useContext } from 'react'
+import React, { useEffect,useState,useContext, useReducer } from 'react'
 import {DeviceContext}  from '../DeviceContext/DeviceContext'
-
 import axios from "axios";
+import {getUserId} from "../../helpers/userToken"
 import { Link } from 'react-router-dom';
 const $ = window.$;
+const registerReducer = (state, action) =>{
+	// eslint-disable-next-line default-case
+	switch(action.type){
+		case 'inputChange' : {
+			return {
+				...state,
+				[action.name]: action.value
+			}
+		}
+		case 'error' : {
+			return {
+				...state,
+				error: true
+			}
+		}
+		case 'success' : {
+			return {
+				...state,
+				ogId: "", 
+                full_name: "", 
+                itemOutDate: "", 
+                itemQtyGiven: "", 
+                error: false,
+                success: false,
+            }
+		}
+	}
+}
+const initalState = {
+	ogId: "", 
+	full_name: "", 
+	itemOutDate: "", 
+	itemQtyGiven: "", 
+	error: false,
+	success: false,
+}
 
-const  Employees = () => {
-	const [users] = useContext(DeviceContext)
+const  Devices = () => {
+    const [devices] = useContext(DeviceContext)
+    console.log(devices);
 	const [employees, setemployees] = useState([])
-    const allDevices = users.map(user => Object.values(user).slice(1))
+    const allDevices = devices.map(user => Object.values(user).slice(1))
     const [selectDevice, setselectDevice] = useState([])
-	console.log(allDevices)
+    console.log(allDevices)
+    console.log(selectDevice);
+    let token = localStorage.getItem('token')
+	console.log(token)
+	const [state, dispatch] = useReducer(registerReducer,initalState)
+	const {ogId,full_name,itemOutDate,itemQtyGiven, error, success} = state
+	const assignDevice = async e =>{
+		e.preventDefault();
+		const assignInfo =  {
+		"ogId": ogId,
+		"full_name": full_name,
+		"itemOutDate": itemOutDate,
+        "itemQtyGiven": itemQtyGiven,
+        "givenById": getUserId()
+	}
+		console.log(assignInfo)		
+		try{
+			let device = await axios.post('https://shielded-plains-57822.herokuapp.com/assign/employee',assignInfo, {headers: {'Authorization': `Bearer ${token}`}})
+			console.log(device.data)			
+			 dispatch({type: 'success'})
+		}catch(err){
+			console.log(err)
+			dispatch({type: 'error'})
+		}
+    }
+    
+    
 
     useEffect(() => {
         let table = $('#example').DataTable( {
@@ -82,66 +145,18 @@ const  Employees = () => {
                 </div>
             </div>
 
-            <div className="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-            <div className="modal-dialog" role="document">
-                <div className="modal-content">               
-                <div className="modal-body">
-                    <button type="button" className="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                    </button>
-                <form  style={{marginTop:"30px" }}>
-                    <h5 className="text-center" id="exampleModalLabel mb-4">Edit Device</h5>                   
-									<div className="row mt-5">
-										<div className="col-md-12">
-										
-											<div className="row">
-												<div className="col-md-6">
-													<div className="form-group">
-														<label>Device Id</label>
-														<input type="text" className="form-control" value="" />
-													</div>
-												</div>
-												<div className="col-md-6">
-													<div className="form-group">
-														<label>Device Name</label>
-														<input type="text" className="form-control" value={selectDevice[0]} />
-													</div>
-												</div>
-												<div className="col-md-6">
-													<div className="form-group">
-														<label>Assigned</label>
-														<input type="text" className="form-control" value={selectDevice[1]} />
-													</div>
-												</div>
-												<div className="col-md-6">
-													<div className="form-group">
-														<label>Assign to</label>														
-															<input className="form-control " type="text" value={selectDevice[2]} />
-													</div>
-												</div>
-												
-											</div>
-										</div>
-									</div>
-									
-									<div className="submit-section">
-										<button className="btn btn-primary submit-btn">Submit</button>
-									</div>
-								</form>
-                </div>               
-                </div>
-            </div>
-            </div>
 
             <div className="row">                
             <div className="modal fade" id="AssignDevice" tabindex="-1" role="dialog" aria-labelledby="AssignDeviceLabel" aria-hidden="true">
             <div className="modal-dialog" role="document">
+            {success && <div className="alert  alert-success" style={{width:'100%'}}>Device Successfully assigned</div> }
+				{error &&  <div className="alert  alert-success" style={{width:'100%'}}>Unable to assign device</div> }
                 <div className="modal-content">               
                 <div className="modal-body">
                     <button type="button" className="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                     </button>
-                <form  style={{marginTop:"30px" }}>
+                <form onSubmit={assignDevice} style={{marginTop:"30px" }}>
                     <h5 className="text-center" id="exampleModalLabel mb-4">Assign Device</h5>                   
 									<div className="row mt-5">
 										<div className="col-md-12">
@@ -150,19 +165,29 @@ const  Employees = () => {
 												<div className="col-md-6">
 													<div className="form-group">
 														<label>Employee OGID</label>
-														<input type="text" className="form-control" value="" />
+                                                        <input type="text" className="form-control" value={ogId}
+                                                        onChange={e => dispatch({type: 'inputChange', name: 'ogId',value: e.currentTarget.value})}  />
 													</div>
 												</div>
 												<div className="col-md-6">
 													<div className="form-group">
 														<label>Employee FullName</label>
-														<input type="text" className="form-control" value="" />
+                                                        <input type="text" className="form-control" value={full_name}
+                                                        onChange={e => dispatch({type: 'inputChange', name: 'full_name',value: e.currentTarget.value})}  />
 													</div>
 												</div>												
 												<div className="col-md-6">
 													<div className="form-group">
-														<label>Device ID</label>														
-															<input className="form-control " type="text" value={selectDevice[2]} />
+														<label>Date Issued</label>														
+                                                            <input className="form-control " type="date" value={itemOutDate}
+                                                            onChange={e => dispatch({type: 'inputChange', name: 'itemOutDate',value: e.currentTarget.value})}  />
+													</div>
+												</div>
+                                                <div className="col-md-6">
+													<div className="form-group">
+														<label>Quantity</label>														
+                                                            <input className="form-control " type="number" value={itemQtyGiven}
+                                                            onChange={e => dispatch({type: 'inputChange', name: 'itemQtyGiven',value: e.currentTarget.value})}  />
 													</div>
 												</div>
 												
@@ -185,4 +210,4 @@ const  Employees = () => {
     )
 }
 
-export default Employees
+export default Devices
