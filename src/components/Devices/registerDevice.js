@@ -1,54 +1,90 @@
-import React, { useState, Fragment } from 'react'
+import React, { useState, useReducer, Fragment } from 'react'
 import axios from "axios";
-const RegisterDevice = () => {  
-    
-    const [device, setDevice] = useState([{name: '', model: '', serialNo:'', color:'', image:'',quantity:''}])
-    const handleChange = (index, e) => {       
-        const values = [...device]
-        if(e.target.name =="name"){
-            values[index].name = e.target.value
-        }else  if(e.target.name =="model"){
-            values[index].model = e.target.value
-        }
-        else  if(e.target.name =="serialNo"){
-            values[index].serialNo = e.target.value
-        }
-        else  if(e.target.name =="color"){
-            values[index].color = e.target.value
-        }
-        else  if(e.target.name =="image"){
-            values[index].image = e.target.value
-        }else{
-            values[index].quantity = e.target.value
-        }
-        setDevice(values)
-        console.log(values)
-      }
-      const handleRemoveFields = index => {
-        const values = [...device];
-        console.log(index)
-        if(values.length > 1){
-            values.splice(index, 1);
-            setDevice(values);
+import { useHistory } from 'react-router-dom'
+import {getOgid} from "../../helpers/userToken"
 
-        }
-      };
-      const handleAddFields = () => {
-        const values = [...device];
-        values.push({name: '', model: '', serialNo:'', color:'', image:'',quantity:''});
-        setDevice(values);
-      };
-      const handleSubmit = (e) =>{
-        e.preventDefault()
-        console.log(device)
-      }
+const registerReducer = (state, action) =>{
+	// eslint-disable-next-line default-case
+	switch(action.type){
+		case 'inputChange' : {
+			return {
+				...state,
+				[action.name]: action.value
+			}
+		}
+		case 'error' : {
+			return {
+				...state,
+				error: true
+			}
+		}
+		case 'success' : {
+			return {
+				...state,
+				itemName: "", 
+                itemModel: "", 
+                itemSerialNumber: "", 
+                itemQuantity: "", 
+                itemLocation: "", 
+                createdById: "", 
+                itemColor: "",
+                itemType: "",
+                error: false,
+                success: false,
+			}
+		}
+	}
+}
+const initalState = {
+	itemName: "", 
+	itemModel: "", 
+	itemSerialNumber: "", 
+	itemQuantity: "", 
+    itemLocation: "",
+    itemColor: "", 
+    itemType: "",
+	createdById: "", 
+	error: false,
+	success: false,
+}
+const RegisterDevice = () => {  
+    let history = useHistory()
+	let token = localStorage.getItem('token')
+	console.log(token)
+	const [state, dispatch] = useReducer(registerReducer,initalState)
+	const {itemName,itemModel,itemLocation,itemQuantity, itemType, itemSerialNumber, itemColor, error, success} = state
+	const onSubmit = async e =>{
+		e.preventDefault();
+		const newDevice =  {
+		"itemName": itemName,
+		"itemModel": itemModel,
+		"itemLocation": itemLocation,
+        "itemQuantity": itemQuantity,
+        "itemColor": itemColor,
+        "itemType": itemType,
+        "itemSerialNumber": itemSerialNumber,
+		"createdById": getOgid(),
+	}
+		console.log(newDevice)		
+		try{
+			let device = await axios.post('https://shielded-plains-57822.herokuapp.com/devices/',newDevice, {headers: {'Authorization': `Bearer ${token}`}})
+			console.log(device.data)			
+			 dispatch({type: 'success'})
+		}catch(err){
+			console.log(err)
+			dispatch({type: 'error'})
+		}
+	}
+    
     
     return (
-        <form onSubmit={handleSubmit} id="wrapper" className="page-wrapper" style={{minHeight: "482px"}}>                
+        <form onSubmit={onSubmit} id="wrapper" className="page-wrapper" style={{minHeight: "482px"}}>                
                   <div className="content container-fluid">
                   <div className="page-header">
 						<div className="row align-items-center">
 							<div className="col">
+                            {success && <div className="alert  alert-success" style={{width:'100%'}}>Device Successfully Created</div> }
+							{error &&  <div className="alert  alert-success" style={{width:'100%'}}>Unable to save device</div> }
 								<h3 className="page-title">Devices</h3>
 								<ul className="breadcrumb">
 									<li className="breadcrumb-item"><a href="/">Dashboard</a></li>
@@ -59,14 +95,14 @@ const RegisterDevice = () => {
 					</div>
                     <div className="row">
                         <div className="col-md-8">
-                                    {device && device.map((val, index) =>(
+                              
                                         
-                                        <Fragment key={`${val}_${index}`}>
+                                        <Fragment>
                                             <div className="card">
                                             <div className="row">
                                                 <div className="col-md-12">
-                                                <div className="pro-edit ml-1 mr-5 mt-5 mb-5"><a onClick={handleAddFields} className="edit-icon ml-3" href="#"><i className="fa fa-plus"></i></a></div> 
-                                                <div className="pro-edit ml-1 mr-5 mt-5 mb-5"><a onClick={() => handleRemoveFields(index)} className="edit-icon" href="#"><i className="fa fa-minus"></i></a></div>
+                                                {/* <div className="pro-edit ml-1 mr-5 mt-5 mb-5"><a onClick={handleAddFields} className="edit-icon ml-3" href="#"><i className="fa fa-plus"></i></a></div> 
+                                                <div className="pro-edit ml-1 mr-5 mt-5 mb-5"><a onClick={() => handleRemoveFields(index)} className="edit-icon" href="#"><i className="fa fa-minus"></i></a></div> */}
                                                 </div>
                                             </div>
                                             <div className="row p-3">
@@ -74,8 +110,8 @@ const RegisterDevice = () => {
                                                 <div className="form-group">
                                                 <label htmlFor="">Device Name</label>
                                                 <input type="text"                                                    
-                                                    value={val.name}
-                                                    onChange={event => handleChange(index, event)}                                         
+                                                    value={itemName}
+                                                    onChange={e => dispatch({type: 'inputChange', name: 'itemName',value: e.currentTarget.value})}                                        
                                                     className="form-control" name="name" id="name" aria-describedby="helpId" placeholder="" />
                                                 
                                             </div>
@@ -84,8 +120,8 @@ const RegisterDevice = () => {
                                         <div className="form-group">
                                         <label htmlFor="">Model</label>
                                         <input type="text"
-                                            value={val.model}
-                                            onChange={event => handleChange(index, event)} 
+                                            value={itemModel}
+                                            onChange={e => dispatch({type: 'inputChange', name: 'itemModel',value: e.currentTarget.value})} 
                                             className="form-control" name="model" id="" aria-describedby="helpId" placeholder="" />
                                         
                                     </div>
@@ -96,8 +132,8 @@ const RegisterDevice = () => {
                                             <div className="form-group">
                                             <label htmlFor="">Serial Number</label>
                                             <input type="text"
-                                                value={val.serialNo}
-                                                onChange={event => handleChange(index, event)} 
+                                                value={itemSerialNumber}
+                                                onChange={e => dispatch({type: 'inputChange', name: 'itemSerialNumber',value: e.currentTarget.value})} 
                                                 className="form-control" name="serialNo" id="" aria-describedby="helpId" placeholder="" />
                                             
                                         </div>
@@ -106,9 +142,31 @@ const RegisterDevice = () => {
                                         <div className="form-group">
                                         <label htmlFor="">Color</label>
                                         <input type="text"
-                                            value={val.color}
-                                            onChange={event => handleChange(index, event)} 
+                                            value={itemColor}
+                                            onChange={e => dispatch({type: 'inputChange', name: 'itemColor',value: e.currentTarget.value})} 
                                             className="form-control" name="color" id="" aria-describedby="helpId" placeholder="" />
+                                        
+                                    </div>
+                                </div>
+                                </div>
+                                <div className="row p-3">
+                                <div className="col-md-6 mt-2" >
+                                    <div className="form-group">
+                                        <label htmlFor="">Location</label>
+                                        <input type="text"
+                                        value={itemLocation}
+                                        onChange={e => dispatch({type: 'inputChange', name: 'itemLocation',value: e.currentTarget.value})} 
+                                        className="form-control" name="quantity" id="" aria-describedby="helpId" placeholder="" />
+                                        
+                                    </div>
+                                </div>
+                                <div className="col-md-6" >
+                                        <div className="form-group">
+                                        <label htmlFor="">Quantity</label>
+                                        <input type="number"
+                                            value={itemQuantity}
+                                            onChange={e => dispatch({type: 'inputChange', name: 'itemQuantity',value: parseInt(e.currentTarget.value)})} 
+                                            className="form-control" name="quantity" id="" aria-describedby="helpId" placeholder="" />
                                         
                                     </div>
                                 </div>
@@ -118,27 +176,31 @@ const RegisterDevice = () => {
                                     <div className="form-group">
                                         <label htmlFor="">Upload Image</label>
                                         <input type="file"
-                                        value={val.image}
-                                        onChange={event => handleChange(index, event)} 
+                                        // value={val.image}
+                                        // onChange={event => handleChange(index, event)} 
                                          className="form-control-file" name="image" id="" placeholder="" aria-describedby="fileHelpId" />
                                         
                                     </div>
                                 </div>
-                                    <div className="col-md-6" >
-                                        <div className="form-group">
-                                        <label htmlFor="">Quantity</label>
-                                        <input type="number"
-                                            value={val.quantity}
-                                            onChange={event => handleChange(index, event)} 
-                                            className="form-control" name="quantity" id="" aria-describedby="helpId" placeholder="" />
+                                <div className="col-md-6 mt-2" >
+                                    <div className="form-group">
+                                        <label htmlFor="">Type</label>
+                                        <select
+                                        value={itemType}
+                                        onChange={e => dispatch({type: 'inputChange', name: 'itemType',value: e.currentTarget.value})} 
+                                        className="form-control" name="type" id="" placeholder="Please Select an option" aria-describedby="helpId">
+                                            <option value="" disabled selected>Select your option</option>
+                                            <option>single</option>
+                                            <option>bulk</option>
+                                        </select>
                                         
                                     </div>
                                 </div>
+                        
                             </div>                           
                         </div>
                                     
                             </Fragment>      
-                                   ))}  
                             <div className="row">
                                     <div className="col-md-12">
                                     <div className=" float-right mr-3 mb-3">
@@ -151,7 +213,7 @@ const RegisterDevice = () => {
                         
        
                         </div>
-                        <div className="col-md-4">
+                        {/* <div className="col-md-4">
                             <div className="card text-left">
                               <img className="card-img-top" src="holder.js/100px180/" alt="" />
                               {device.length >= 1 ?
@@ -179,7 +241,7 @@ const RegisterDevice = () => {
                               </div>
                               ))}</>) : ''  }
                             </div>
-                        </div>
+                        </div> */}
                     </div>
            
         </div>
