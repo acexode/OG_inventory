@@ -88,36 +88,31 @@ const  Devices = () => {
             ],
             "bDestroy": true,
             "columnDefs": [ {
-                                            "targets": -1,
-                                            "data": null,
-                                            "defaultContent": `<div className="dropdown show">
-                                           
-                                            <a className="" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                            <i className="las la-ellipsis-v"></i>
-                                            </a>                      
-                                            <div className="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                                                 
-                                               
-                                              <button type="button" onClick={handleClick} className="btn btn-primary" data-toggle="modal" data-target="#AssignDevice">Assign device</button>
-                                             
-                                            </div>
-                                          </div>`
-                                        } ], 
+                    "targets": -1,
+                    "data": null,
+                    "defaultContent": `<div class="dropdown ">
+					<a href="#" class="nav-link text-secondary pl-4 " data-toggle="dropdown" aria-expanded="false"><i class="fa fa-ellipsis-v"></i></a>
+					<div class="dropdown-menu dropdown-menu-right">
+						<a class="dropdown-item" href="#" id="showEdit" data-toggle="modal" data-target="#exampleModal">Edit</a>
+						<a class="dropdown-item" href="#"  data-toggle="modal" data-target="#AssignDevice">Assign Device</a>
+                       
+					</div>
+				</div>`
+            } ], 
             
         } )    
-        // let table = $('#example')
+      
         console.log(table)
-                        $('#example tbody #showEdit').on( 'click', function () {               
-                            var data = table.row( $(this).parents('tr') ).data();
-                            setselectDevice(data)
+        $('#example tbody #showEdit').on( 'click', function () {               
+            var data = table.row( $(this).parents('tr') ).data();
+            setselectDevice(data)
                             
-                        } );
-                        $('#example tbody #AssignDevice').on( 'click', function () {              
-                            var data = table.row( $(this).parents('tr') ).data();
-                            setselectDevice(data)
-                            console.log(data);
-                        } );
-                    // } );
+        } );
+        $('#example tbody #AssignDevice').on( 'click', function () {              
+            var data = table.row( $(this).parents('tr') ).data();
+            setselectDevice(data)
+        } );
+                    
               
           
        

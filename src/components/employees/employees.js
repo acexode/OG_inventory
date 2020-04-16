@@ -19,14 +19,26 @@ const  Employees = () => {
         $('#example').DataTable( {
             data: allUsers,
             columns: [
-                { title: "Name" },
-                { title: "OGID" },
+                { title: "Name", "width": "25%" },
+                { title: "OGID", "width": "10%" },
                 { title: "Department" },
                 { title: "Role" },
 				{ title: "Phone Number" },
-				{title: "Email"}	
+				{title: "Email", "width": "20%" }	
             ],
-            "bDestroy": true
+            "bDestroy": true,
+            'rowCallback': function(row, data, index){
+				console.log(data[4])
+				if(data[3] == "admin"){
+					$(row).find('td:eq(3)').html(`<span class="badge bg-inverse-danger">Admin</span>`);
+				}
+				else if(data[3] == "user"){
+					$(row).find('td:eq(3)').html(`<span class="badge bg-inverse-info">User</span>`);
+				}
+				else{
+					$(row).find('td:eq(3)').html(`<span class="badge bg-inverse-success">Employee</span>`);;
+				}
+			}
             
         } )    
        
