@@ -1,6 +1,5 @@
 import React, {useReducer} from 'react'
 import axios from 'axios'
-import { useHistory } from 'react-router-dom'
 const registerReducer = (state, action) =>{
 	// eslint-disable-next-line default-case
 	switch(action.type){
@@ -44,7 +43,7 @@ const initalState = {
 	success: false,
 }
 const RegisterEmployee = () => {
-	let history = useHistory()
+	
 	let token = localStorage.getItem('token')
 	console.log(token)
 	const [state, dispatch] = useReducer(registerReducer,initalState)
