@@ -103,11 +103,12 @@ const  Devices = () => {
         e.preventDefault();
         const formData = new FormData();
         formData.append('deviceId', selectDevice[8])
+        console.log(selectDevice[8]);
         console.log(images);
         for(var i = 0; i<images.length; i++) {
             formData.append('deviceImage', images[i])
         }
-        
+        console.log(formData.getAll('deviceImage'))
         try{
             let device = await axios.post('https://shielded-plains-57822.herokuapp.com/devices/upload',formData, {headers: {'Authorization': `Bearer ${token}`}})
             console.log(device)			
@@ -214,13 +215,11 @@ const  Devices = () => {
                         Upload Images
                     </div>
                     <div class="modal-body">
-                    <form onSubmit={uploadDevice} style={{marginTop:"30px" }}>
+                    <form enctype="multipart/form-data"  onSubmit={uploadDevice} style={{marginTop:"30px" }}>
                     <div className="col-md-6 mt-2" >
                                     <div className="form-group">
                                         <label htmlFor="">Upload Image</label>
-                                        <input type="file"
-                                        value={images}
-                                        ref={fileInput}
+                                        <input type="file" 
                                         onChange={e =>  dispatch({type: 'inputChange', name: 'images',value: e.target.files})} 
                                         multiple
                                          className="form-control-file" name="images" id="" placeholder="" aria-describedby="fileHelpId" />
