@@ -1,8 +1,10 @@
 import React,{useContext} from "react";
 import {EmployeeContext} from "../EmployeeContext/EmployeeContext"
+import {DeviceContext} from "../DeviceContext/DeviceContext"
 
 const AdminDashboard = () => {
   const [users] = useContext(EmployeeContext)
+  const[devices, assignedDevices, unAssignedDevices] = useContext(DeviceContext)
   return (
     <div className="page-wrapper" style={{ minHeight: "529px" }}>
       <div className="content container-fluid">
@@ -25,7 +27,7 @@ const AdminDashboard = () => {
                   <i className="fa fa-laptop"></i>
                 </span>
                 <div className="dash-widget-info">
-                  <h3>1200</h3>
+                  <h3>{devices.length}</h3>
                   <span>Devices</span>
                 </div>
               </div>
@@ -38,7 +40,7 @@ const AdminDashboard = () => {
                   <i className="fa fa-hashtag"></i>
                 </span>
                 <div className="dash-widget-info">
-                  <h3>840</h3>
+                  <h3>{assignedDevices.length}</h3>
                   <span>Assigned Devices</span>
                 </div>
               </div>
@@ -51,7 +53,7 @@ const AdminDashboard = () => {
                   <i className="fa fa-hashtag"></i>
                 </span>
                 <div className="dash-widget-info">
-                  <h3>360</h3>
+                  <h3>{unAssignedDevices.length}</h3>
                   <span>Unassigned Devices</span>
                 </div>
               </div>

@@ -12,6 +12,8 @@ import adminEmployees from './components/employees/adminEmployee';
 import RegisterEmployee from './components/employees/registerEmployee';
 import employeeSetting from './components/employees/employeeSetting';
 import Devices from './components/Devices/devices';
+import AssignedDevices from './components/Devices/assignedevices';
+import UnassignedDevices from './components/Devices/unassignedevices';
 import RegisterDevice from './components/Devices/registerDevice';
 import AuthGuard from './components/login/AuthGuard';
 import {EmployeeProvider} from  "./components/EmployeeContext/EmployeeContext"
@@ -36,6 +38,8 @@ const Main = withRouter(({ location }) => {
           <AuthGuard exact path="/employee-dashboard" component={EmployeeDashboard} />
           <AuthGuard exact path="/register-device" component={RegisterDevice} />
           <AuthGuard exact path="/devices" component={Devices} />
+          <AuthGuard exact path="/assignedevices" component={AssignedDevices} />
+          <AuthGuard exact path="/unassignedevices" component={UnassignedDevices} />
           <AuthGuard path="/all-employees" component={Employees} />
           <AuthGuard path="/admin" component={adminEmployees} />       
           <AuthGuard path="/register-employee" component={RegisterEmployee} />       
