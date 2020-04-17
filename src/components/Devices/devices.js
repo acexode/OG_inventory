@@ -26,6 +26,7 @@ const registerReducer = (state, action) =>{
                 full_name: "", 
                 itemOutDate: "", 
                 itemQtyGiven: "", 
+                images : null,
                 error: false,
                 success: false,
             }
@@ -36,7 +37,8 @@ const initalState = {
 	ogId: "", 
 	full_name: "", 
 	itemOutDate: "", 
-	itemQtyGiven: "", 
+    itemQtyGiven: "", 
+    images: [],
 	error: false,
 	success: false,
 }
@@ -51,9 +53,9 @@ const  Devices = () => {
     console.log(allDevices)
     console.log(selectDevice);
     let token = localStorage.getItem('token')
-	// console.log(token)
+
 	const [state, dispatch] = useReducer(registerReducer,initalState)
-	const {ogId,full_name,itemOutDate,itemQtyGiven, error, success} = state
+	const {ogId,full_name,itemOutDate,itemQtyGiven, images, error, success} = state
 	const assignDevice = async e =>{
 		e.preventDefault();
 		const assignInfo =  {
@@ -77,6 +79,8 @@ const  Devices = () => {
 		}
     }
 
+    const fileInput = React.createRef()
+
     const deleteDevice = async e => {
         e.preventDefault();
         const deleteInfo = {
@@ -93,6 +97,26 @@ const  Devices = () => {
 			dispatch({type: 'error'})
 		}
     }
+
+      
+      const uploadDevice = async e => {
+        e.preventDefault();
+        const formData = new FormData();
+        formData.append('deviceId', selectDevice[8])
+        console.log(images);
+        for(var i = 0; i<images.length; i++) {
+            formData.append('deviceImage', images[i])
+        }
+        
+        try{
+            let device = await axios.post('https://shielded-plains-57822.herokuapp.com/devices/upload',formData, {headers: {'Authorization': `Bearer ${token}`}})
+            console.log(device)			
+             dispatch({type: 'success'})
+        }catch(error){
+            console.log(error.response)
+			dispatch({type: 'error'})
+        }
+      }
     
     
 
@@ -114,10 +138,10 @@ const  Devices = () => {
                     "defaultContent": `<div class="dropdown">
 					<a href="#" class="nav-link text-secondary pl-4 " data-toggle="dropdown" aria-expanded="false"><i class="fa fa-ellipsis-v"></i></a>
                     <div class="dropdown-menu dropdown-menu-right">
-                    <a class="dropdown-item" href="#" id="showEdit" data-toggle="modal" data-target="#viewModal">View Details</a>
-						<a class="dropdown-item" href="#" id="showEdit" data-toggle="modal" data-target="#exampleModal">Delete</a>
-            <a class="dropdown-item" href="#" id="showAssign" data-toggle="modal" data-target="#AssignDevice">Assign Device</a> 
-                       
+                    <a class="dropdown-item" href="#" id="showModal"   data-toggle="modal" data-target="#viewModal">View Details</a>
+					<a class="dropdown-item" href="#" id="showEdit"   data-toggle="modal" data-target="#exampleModal">Delete</a>
+                    <a class="dropdown-item" href="#" id="showAssign" data-toggle="modal" data-target="#AssignDevice">Assign Device</a> 
+                    <a class="dropdown-item" href="#" id="showAssign" data-toggle="modal" data-target="#newDevice">Upload Device Image(s)</a>  
 					</div>
 				</div>`
             } ], 
@@ -132,16 +156,27 @@ const  Devices = () => {
             setselectDevice(data)
                             
         } );
+        $('#example tbody #showModal').on( 'click', function () {               
+			var data = table.row( $(this).parents('tr') ).data();
+			console.log(table.row( $(this).parents('tr') ).index())
+			console.log(data)
+            setselectDevice(data)
+                            
+        } );
         $('#example tbody #showAssign').on( 'click', function () {              
 			var data = table.row( $(this).parents('tr') ).data();
 			console.log(table.row( $(this).parents('tr') ).index())
 			console.log(data)
             setselectDevice(data)
         } );
-                    
-              
-          
-       
+
+        $('#example tbody #showUpload').on( 'click', function () {              
+			var data = table.row( $(this).parents('tr') ).data();
+			console.log(table.row( $(this).parents('tr') ).index())
+			console.log(data)
+            setselectDevice(data)
+        } );
+                           
     }, [allDevices])
     return (
         <div id="wrapper" className="page-wrapper" style={{minHeight: "482px"}} >
@@ -170,6 +205,44 @@ const  Devices = () => {
                 <div className="row mt-5"></div>
                 </div>
             </div>
+
+            <div className="row">
+            <div class="modal fade" id="newDevice" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                <div class="modal-content">
+                <div class="modal-header">
+                        Upload Images
+                    </div>
+                    <div class="modal-body">
+                    <form onSubmit={uploadDevice} style={{marginTop:"30px" }}>
+                    <div className="col-md-6 mt-2" >
+                                    <div className="form-group">
+                                        <label htmlFor="">Upload Image</label>
+                                        <input type="file"
+                                        value={images}
+                                        ref={fileInput}
+                                        onChange={e =>  dispatch({type: 'inputChange', name: 'images',value: e.target.files})} 
+                                        multiple
+                                         className="form-control-file" name="images" id="" placeholder="" aria-describedby="fileHelpId" />
+                                        
+                                    </div>
+                                </div>
+                                <div className="submit-section">
+										<button className="btn btn-primary submit-btn">Submit</button>
+									</div>
+                    </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                    </div>
+            </div>
+    </div>
+  </div>
+  
+            </div>
+
+            
+
 
             <div className="row">
             <div class="modal fade" id="viewModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
