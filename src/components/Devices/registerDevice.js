@@ -69,7 +69,8 @@ const RegisterDevice = () => {
 		try{
 			let device = await axios.post('https://shielded-plains-57822.herokuapp.com/devices/',newDevice, {headers: {'Authorization': `Bearer ${token}`}})
 			console.log(device.data)			
-			 dispatch({type: 'success'})
+             dispatch({type: 'success'})
+             history.push('/devices')
 		}catch(err){
 			console.log(err)
 			dispatch({type: 'error'})
@@ -172,16 +173,6 @@ const RegisterDevice = () => {
                                 </div>
                                 </div>
                                 <div className="row p-3">
-                                    <div className="col-md-6 mt-2" >
-                                    <div className="form-group">
-                                        <label htmlFor="">Upload Image</label>
-                                        <input type="file"
-                                        // value={val.image}
-                                        // onChange={event => handleChange(index, event)} 
-                                         className="form-control-file" name="image" id="" placeholder="" aria-describedby="fileHelpId" />
-                                        
-                                    </div>
-                                </div>
                                 <div className="col-md-6 mt-2" >
                                     <div className="form-group">
                                         <label htmlFor="">Type</label>

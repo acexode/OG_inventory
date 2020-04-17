@@ -26,6 +26,7 @@ const registerReducer = (state, action) =>{
                 full_name: "", 
                 itemOutDate: "", 
                 itemQtyGiven: "", 
+                images : null,
                 error: false,
                 success: false,
             }
@@ -36,7 +37,8 @@ const initalState = {
 	ogId: "", 
 	full_name: "", 
 	itemOutDate: "", 
-	itemQtyGiven: "", 
+    itemQtyGiven: "", 
+    images: [],
 	error: false,
 	success: false,
 }
@@ -47,12 +49,13 @@ const  Devices = () => {
 	const [employees, setemployees] = useState([])
     const allDevices = devices.map(user => Object.values(user).slice(1))
     const [selectDevice, setselectDevice] = useState([])
+    const [assigned, setAssign] = useState(false)
     console.log(allDevices)
     console.log(selectDevice);
     let token = localStorage.getItem('token')
-	// console.log(token)
+
 	const [state, dispatch] = useReducer(registerReducer,initalState)
-	const {ogId,full_name,itemOutDate,itemQtyGiven, error, success} = state
+	const {ogId,full_name,itemOutDate,itemQtyGiven, images, error, success} = state
 	const assignDevice = async e =>{
 		e.preventDefault();
 		const assignInfo =  {
@@ -68,12 +71,52 @@ const  Devices = () => {
 		try{
 			let device = await axios.post('https://shielded-plains-57822.herokuapp.com/assign/employee',assignInfo, {headers: {'Authorization': `Bearer ${token}`}})
 			console.log(device.data)			
-			 dispatch({type: 'success'})
+             dispatch({type: 'success'})
+             setAssign(true)
 		}catch(error){
 			console.log(error.response)
 			dispatch({type: 'error'})
 		}
     }
+
+    const fileInput = React.createRef()
+
+    const deleteDevice = async e => {
+        e.preventDefault();
+        const deleteInfo = {
+            itemId: selectDevice[8]
+        }
+        console.log(deleteInfo);
+        try{
+			let device = await axios.delete('https://shielded-plains-57822.herokuapp.com/devices', {headers: {'Authorization': `Bearer ${token}`}, data:deleteInfo})
+			console.log(device)			
+             dispatch({type: 'success'})
+             window.location.reload();
+		}catch(error){
+			console.log(error.response)
+			dispatch({type: 'error'})
+		}
+    }
+
+      
+      const uploadDevice = async e => {
+        e.preventDefault();
+        const formData = new FormData();
+        formData.append('deviceId', selectDevice[8])
+        console.log(images);
+        for(var i = 0; i<images.length; i++) {
+            formData.append('deviceImage', images[i])
+        }
+        
+        try{
+            let device = await axios.post('https://shielded-plains-57822.herokuapp.com/devices/upload',formData, {headers: {'Authorization': `Bearer ${token}`}})
+            console.log(device)			
+             dispatch({type: 'success'})
+        }catch(error){
+            console.log(error.response)
+			dispatch({type: 'error'})
+        }
+      }
     
     
 
@@ -82,22 +125,23 @@ const  Devices = () => {
             data: allDevices,
             columns: [
                 { title: "Name" },
-                { title: "SerialNo" },
                 { title: "Model" },
-                { title: "Color" },
-				{ title: "Location" },
+                { title: "Location" },
+                { title: "Quantity" },
+				{ title: "Color" },
 				{title: "Action"}	
             ],
             "bDestroy": true,
             "columnDefs": [ {
                     "targets": -1,
                     "data": null,
-                    "defaultContent": `<div class="dropdown ">
+                    "defaultContent": `<div class="dropdown">
 					<a href="#" class="nav-link text-secondary pl-4 " data-toggle="dropdown" aria-expanded="false"><i class="fa fa-ellipsis-v"></i></a>
-					<div class="dropdown-menu dropdown-menu-right">
-						<a class="dropdown-item" href="#" id="showEdit" data-toggle="modal" data-target="#exampleModal">Edit</a>
-						<a class="dropdown-item" href="#" id="showAssign" data-toggle="modal" data-target="#AssignDevice">Assign Device</a>
-                       
+                    <div class="dropdown-menu dropdown-menu-right">
+                    <a class="dropdown-item" href="#" id="showModal"   data-toggle="modal" data-target="#viewModal">View Details</a>
+					<a class="dropdown-item" href="#" id="showEdit"   data-toggle="modal" data-target="#exampleModal">Delete</a>
+                    <a class="dropdown-item" href="#" id="showAssign" data-toggle="modal" data-target="#AssignDevice">Assign Device</a> 
+                    <a class="dropdown-item" href="#" id="showAssign" data-toggle="modal" data-target="#newDevice">Upload Device Image(s)</a>  
 					</div>
 				</div>`
             } ], 
@@ -112,16 +156,27 @@ const  Devices = () => {
             setselectDevice(data)
                             
         } );
+        $('#example tbody #showModal').on( 'click', function () {               
+			var data = table.row( $(this).parents('tr') ).data();
+			console.log(table.row( $(this).parents('tr') ).index())
+			console.log(data)
+            setselectDevice(data)
+                            
+        } );
         $('#example tbody #showAssign').on( 'click', function () {              
 			var data = table.row( $(this).parents('tr') ).data();
 			console.log(table.row( $(this).parents('tr') ).index())
 			console.log(data)
             setselectDevice(data)
         } );
-                    
-              
-          
-       
+
+        $('#example tbody #showUpload').on( 'click', function () {              
+			var data = table.row( $(this).parents('tr') ).data();
+			console.log(table.row( $(this).parents('tr') ).index())
+			console.log(data)
+            setselectDevice(data)
+        } );
+                           
     }, [allDevices])
     return (
         <div id="wrapper" className="page-wrapper" style={{minHeight: "482px"}} >
@@ -149,6 +204,118 @@ const  Devices = () => {
                                   
                 <div className="row mt-5"></div>
                 </div>
+            </div>
+
+            <div className="row">
+            <div class="modal fade" id="newDevice" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                <div class="modal-content">
+                <div class="modal-header">
+                        Upload Images
+                    </div>
+                    <div class="modal-body">
+                    <form onSubmit={uploadDevice} style={{marginTop:"30px" }}>
+                    <div className="col-md-6 mt-2" >
+                                    <div className="form-group">
+                                        <label htmlFor="">Upload Image</label>
+                                        <input type="file"
+                                        value={images}
+                                        ref={fileInput}
+                                        onChange={e =>  dispatch({type: 'inputChange', name: 'images',value: e.target.files})} 
+                                        multiple
+                                         className="form-control-file" name="images" id="" placeholder="" aria-describedby="fileHelpId" />
+                                        
+                                    </div>
+                                </div>
+                                <div className="submit-section">
+										<button className="btn btn-primary submit-btn">Submit</button>
+									</div>
+                    </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                    </div>
+            </div>
+    </div>
+  </div>
+  
+            </div>
+
+            
+
+
+            <div className="row">
+            <div class="modal fade" id="viewModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+    <div class="modal-content">
+                    <div class="modal-header">
+                        View Device Details
+                    </div>
+                    <div class="modal-body">
+                        <table class="table table-striped">
+                        <tbody>
+                            <tr>
+                            <th scope="row">Name</th>
+                            <td>{selectDevice[0]}</td>
+                            </tr>
+                            <tr>
+                            <th scope="row">Model</th>
+                            <td>{selectDevice[1]}</td>
+                            </tr>
+                            <tr>
+                            <th scope="row">Location</th>
+                            <td>{selectDevice[2]}</td>
+                            </tr>
+                            <tr>
+                            <th scope="row">Quantity</th>
+                            <td>{selectDevice[3]}</td>
+                            </tr>
+                            <tr>
+                            <th scope="row">Color</th>
+                            <td>{selectDevice[4]}</td>
+                            </tr>
+                            <tr>
+                            <th scope="row">Type</th>
+                            <td>{selectDevice[5]}</td>
+                            </tr>
+                            <tr>
+                            <th scope="row">Serial Number</th>
+                            <td>{selectDevice[6]}</td>
+                            </tr>
+                        </tbody>
+                        </table>
+ 
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                    </div>
+            </div>
+    </div>
+  </div>
+  
+            </div>
+
+
+            
+            <div className="row">                
+            <div className="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="AssignDeviceLabel" aria-hidden="true">
+            <div class="modal-dialog">
+            {success && <div className="alert  alert-success" style={{width:'100%'}}>Device Successfully deleted</div> }
+				{error &&  <div className="alert  alert-danger" style={{width:'100%'}}>Unable to delete device</div> }
+                <div class="modal-content">
+                    <div class="modal-header">
+                        Delete Device
+                    </div>
+                    <div class="modal-body">
+                        Are you sure you want to delete <b>{selectDevice[0]}</b>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                        <button onClick={deleteDevice} class="btn btn-danger btn-ok">Delete</button>
+                    </div>
+                </div>
+            </div>
+            </div>
             </div>
 
 
