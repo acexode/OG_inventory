@@ -18,12 +18,14 @@ import RegisterDevice from './components/Devices/registerDevice';
 import AuthGuard from './components/login/AuthGuard';
 import {EmployeeProvider} from  "./components/EmployeeContext/EmployeeContext"
 import {DeviceProvider} from  "./components/DeviceContext/DeviceContext"
+import { getUser, getToken } from './helpers/userToken';
 
 
 const Main = withRouter(({ location }) => {
+  let token = getToken()
   return (
     <>
-      {location.pathname != "/login" && (
+      {(location.pathname != "/login" && token) && (
         <>
           <Header />        
           <Sidebar />

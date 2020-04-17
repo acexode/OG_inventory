@@ -13,7 +13,7 @@ const Header = () =>{
         history.push('/login')
     }
     return (
-
+		
         <div className="header">
                 <div className="header-left mr-5">
                     <a href="#" className="logo">
