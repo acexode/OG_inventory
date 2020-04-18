@@ -64,8 +64,10 @@ const RegisterEmployee = () => {
 			let user = await axios.post('https://shielded-plains-57822.herokuapp.com/users/register',newEmployee, {headers: {'Authorization': `Bearer ${token}`}})
 			console.log(user.data)			
 			 dispatch({type: 'success'})
+			 window.location.reload()
 		}catch(err){
 			console.log(err)
+			
 			dispatch({type: 'error'})
 		}
 	}

@@ -29,7 +29,32 @@ const  Employees = () => {
 	console.log(allUsers)
 
 	const deleteUser = () =>{
+		const ogId = selectUser[1]
+		console.log(ogId)
+		axios.delete(`https://shielded-plains-57822.herokuapp.com/users/${ogId}`,  {headers: {'Authorization': `Bearer ${token}`}})
+			.then(res =>{
+				console.log(res)
+				  setsuccess(true)
+				  setTimeout(() =>{
+					  setsuccess(false)
+					  $('#deleteUser').modal('toggle')
+					  window.location.reload(false)
 
+				  }, 3000)
+				setAlertType("success")
+				setMessage("User deleted successfully")
+			})
+			.catch(err =>{
+				setsuccess(true)
+				setTimeout(() =>{
+					setsuccess(false)
+					$('#deleteUser').modal('toggle')
+					window.location.reload(false)
+				}, 3000)
+				setAlertType("danger")
+				setMessage(err.response.data.message)
+				console.log(err)
+			})
 	}
 	const handleSubmit=(event)=>{
 		event.preventDefault()
@@ -82,7 +107,7 @@ const  Employees = () => {
         let table = $('#example').DataTable( {
             data: allUsers,
             columns: [
-                { title: "Name", "width": "25%" },
+                { title: "Name", "width": "30%" },
                 { title: "OGID", "width": "10%" },
                	{ title: "Role" },
 				{ title: "Phone Number" },
@@ -230,8 +255,8 @@ const  Employees = () => {
 <div className="row">                
             <div className="modal fade" id="deleteUser" tabIndex="-1" role="dialog" aria-labelledby="AssignDeviceLabel" aria-hidden="true">
             <div className="modal-dialog">
-            {success && <div className="alert  alert-success" style={{width:'100%'}}>Device Successfully deleted</div> }
-				{error &&  <div className="alert  alert-danger" style={{width:'100%'}}>Unable to delete device</div> }
+            {success && <div className="alert  alert-success" style={{width:'100%'}}>User Successfully deleted</div> }
+	{error &&  <div className="alert  alert-danger" style={{width:'100%'}}>{message}</div> }
                 <div className="modal-content">
                     <div className="modal-header">
                         Delete Device

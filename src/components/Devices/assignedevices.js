@@ -82,7 +82,7 @@ const AssignedDevices = () => {
             dispatch({type: 'error', msg:error.response.data.message})
             setTimeout(() =>{               
                 $('#AssignDevice').modal('toggle')
-                window.location.reload();
+                // window.location.reload();
             }, 1500)
 		}
     }
@@ -252,14 +252,14 @@ const AssignedDevices = () => {
 				{error &&  <div className="alert  alert-danger" style={{width:'100%'}}>{errMsg}</div> }
                 <div className="modal-content">
                     <div className="modal-header">
-                        Delete Device
+                        Remove assignment
                     </div>
                     <div className="modal-body">
-                        Are you sure you want to delete <b>{selectDevice[0]}</b>
+                        Are you sure you want to remove device (<b>{selectDevice[0]}</b>) assigned to <b>{selectDevice[2]}</b>
                     </div>
                     <div className="modal-footer">
                         <button type="button" className="btn btn-default" data-dismiss="modal">Cancel</button>
-                        <button onClick={undoAssignment} className="btn btn-danger btn-ok">Delete</button>
+                        <button onClick={undoAssignment} className="btn btn-danger btn-ok">Yes</button>
                     </div>
                 </div>
             </div>

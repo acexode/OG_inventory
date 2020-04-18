@@ -302,13 +302,23 @@ const UnassignedDevices = () => {
                                                             onChange={e => dispatch({type: 'inputChange', name: 'itemOutDate',value: e.currentTarget.value})}  />
 													</div>
 												</div>
-                                                <div className="col-md-6">
-													<div className="form-group">
-														<label>Quantity</label>														
-                                                            <input className="form-control " type="number" value={itemQtyGiven}
-                                                            onChange={e => dispatch({type: 'inputChange', name: 'itemQtyGiven',value: e.currentTarget.value})}  />
-													</div>
-												</div>
+                                                {selectDevice[5] == "bulk" ?
+                                                     <div className="col-md-6">
+                                                     <div className="form-group">
+                                                         <label>Quantity</label>														
+                                                             <input className="form-control " type="number" value={itemQtyGiven}
+                                                             onChange={e => dispatch({type: 'inputChange', name: 'itemQtyGiven',value: e.currentTarget.value})}  />
+                                                     </div>
+                                                 </div>
+                                                 :  <div className="col-md-6">
+                                                 <div className="form-group">
+                                                     <label>Quantity</label>														
+                                                         <input className="form-control " readOnly type="number" value={itemQtyGiven}
+                                                         onChange={e => dispatch({type: 'inputChange', name: 'itemQtyGiven',value: e.currentTarget.value})}  />
+                                                 </div>
+                                             </div>
+                                            
+                                            } 
 												
 											</div>
 										</div>
