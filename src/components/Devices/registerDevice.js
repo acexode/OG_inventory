@@ -17,7 +17,7 @@ const registerReducer = (state, action) =>{
             }else{
                 return {
                     ...state,
-                    showQuantity: false,
+                    // showQuantity: false,
                     [action.name]: action.value
                 }
 
@@ -41,7 +41,7 @@ const registerReducer = (state, action) =>{
                 itemColor: "",
                 itemType: "",
                 error: false,
-                success: false,
+                success: true,
 			}
 		}
 	}
@@ -82,7 +82,10 @@ const RegisterDevice = () => {
 			let device = await axios.post('https://shielded-plains-57822.herokuapp.com/devices/',newDevice, {headers: {'Authorization': `Bearer ${token}`}})
 			console.log(device.data)			
              dispatch({type: 'success'})
-             history.push('/devices')
+             setTimeout(() =>{
+                 window.location.reload(false)                
+                
+             },1500)
 		}catch(err){
 			console.log(err)
 			dispatch({type: 'error'})
