@@ -15,6 +15,9 @@ const  Employees = () => {
 	
 
 	const [phone, setphone] = useState('')
+	const [error, seterror] = useState(false)
+	const [success, setsuccess] = useState(false)
+	const [selectUser, setselectUser] = useState([])
 	const [email, setemail] = useState('')
 	const [newRole, setNewRole] = useState(role)
 	const [message, setMessage] = useState('')
@@ -25,6 +28,9 @@ const  Employees = () => {
 	const allUsers = users.map(user => Object.values(user).slice(2))
 	console.log(allUsers)
 
+	const deleteUser = () =>{
+
+	}
 	const handleSubmit=(event)=>{
 		event.preventDefault()
 		if( phone === '' && email === ''){
@@ -98,7 +104,7 @@ const  Employees = () => {
 						<a href="#" class="nav-link text-secondary pl-4 " data-toggle="dropdown" aria-expanded="false"><i class="fa fa-ellipsis-v"></i></a>
 						<div class="dropdown-menu dropdown-menu-right">
 							<a class="dropdown-item" href="#" id="editModal"   data-toggle="modal" data-target="#exampleModal">Edit User</a>
-							<a class="dropdown-item" href="#" id="deleteModal"   data-toggle="modal" data-target="#exampleModal">Delete</a>                 
+							<a class="dropdown-item" href="#" id="deleteModal"   data-toggle="modal" data-target="#deleteUser">Delete</a>                 
 						</div>
 					</div>`)
 					// }else{
@@ -114,6 +120,15 @@ const  Employees = () => {
 			var data = table.row( $(this).parents('tr') ).data();
 			console.log(table.row( $(this).parents('tr') ).index())
 			console.log(data)
+           
+                            
+        } );   
+		$('#example tbody #deleteModal').on( 'click', function () {  
+			    
+			var data = table.row( $(this).parents('tr') ).data();
+			console.log(table.row( $(this).parents('tr') ).index())
+			console.log(data)
+			setselectUser(data)
            
                             
         } );   
@@ -211,6 +226,28 @@ const  Employees = () => {
     </div>
   </div>
 </div>
+
+<div className="row">                
+            <div className="modal fade" id="deleteUser" tabIndex="-1" role="dialog" aria-labelledby="AssignDeviceLabel" aria-hidden="true">
+            <div className="modal-dialog">
+            {success && <div className="alert  alert-success" style={{width:'100%'}}>Device Successfully deleted</div> }
+				{error &&  <div className="alert  alert-danger" style={{width:'100%'}}>Unable to delete device</div> }
+                <div className="modal-content">
+                    <div className="modal-header">
+                        Delete Device
+                    </div>
+                    <div className="modal-body">
+                        Are you sure you want to delete <b>{selectUser[0]}</b>
+                    </div>
+                    <div className="modal-footer">
+                        <button type="button" className="btn btn-default" data-dismiss="modal">Cancel</button>
+                        <button onClick={deleteUser} className="btn btn-danger btn-ok">Delete</button>
+                    </div>
+                </div>
+            </div>
+            </div>
+            </div>
+
     </div>
     )
 }
