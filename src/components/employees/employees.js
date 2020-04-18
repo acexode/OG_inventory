@@ -120,7 +120,7 @@ const  Employees = () => {
 			var data = table.row( $(this).parents('tr') ).data();
 			console.log(table.row( $(this).parents('tr') ).index())
 			console.log(data)
-           
+			setselectUser(data)
                             
         } );   
 		$('#example tbody #deleteModal').on( 'click', function () {  
@@ -183,32 +183,32 @@ const  Employees = () => {
 												<div className="col-md-6">
 													<div className="form-group">
 														<label>OGID</label>
-														<input type="text"  className="form-control" value={ogid}  />
+														<input type="text"  className="form-control" value={selectUser[1]}  />
 													</div>
 												</div>
 												<div className="col-md-6">
 													<div className="form-group">
 														<label>Full Name</label>
-														<input type="text"  className="form-control" value={userName}  />
+														<input type="text"  className="form-control" value={selectUser[0]}  />
 													</div>
 												</div>
 												<div className="col-md-6">
 													<div className="form-group">
 														<label>Role</label>
-														<input type="text"  className="form-control" value={newRole} onChange={(e) => setNewRole(e.target.value)}  />
+														<input type="text"  className="form-control" value={selectUser[2]} onChange={(e) => setNewRole(e.target.value)}  />
 													</div>
 												</div>
 										
 												<div className="col-md-6">
 													<div className="form-group">
 														<label>Phone</label>														
-															<input className="form-control " type="text" value={phone} onChange={(e) => setphone(e.target.value)} />
+															<input className="form-control " type="text" value={selectUser[3]} onChange={(e) => setphone(e.target.value)} />
 													</div>
 												</div>
 												<div className="col-md-6">
 													<div className="form-group">
 														<label>Email</label>														
-															<input className="form-control " type="text" value={email} onChange={(e) => setemail(e.target.value)} />
+															<input className="form-control " type="text" value={selectUser[4]} onChange={(e) => setemail(e.target.value)} />
 													</div>
 												</div>
 												
