@@ -54,7 +54,7 @@ const Header = () =>{
 							<span>{role[0].toUpperCase() + role.slice(1)}</span>
 						</a>
 						<div className="dropdown-menu">
-						<Link className="dropdown-item" to="/profile">My Profile</Link>
+						<Link className="dropdown-item" to="/employee-dashboard">My Profile</Link>
 							<a onClick={logout} className="dropdown-item" href="#">Logout</a>
 						</div>
 					</li>			
@@ -64,7 +64,7 @@ const Header = () =>{
 				<div className="dropdown mobile-user-menu">
 					<a href="#" className="nav-link dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i className="fa fa-ellipsis-v"></i></a>
 					<div className="dropdown-menu dropdown-menu-right">
-                            <Link className="dropdown-item" to="/profile">My Profile</Link>
+                            <Link className="dropdown-item" to="/employee-dashboard">My Profile</Link>
 							<Link className="dropdown-item" to="/user-settings">Settings</Link>
 							<a onClick={logout} className="dropdown-item" href="">Logout</a>
 					</div>

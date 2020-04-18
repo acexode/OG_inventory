@@ -121,7 +121,7 @@ const AssignedDevices = () => {
         let table = $('#example').DataTable( {
             data: allDevices,
             columns: [
-                { title: "Item id" },
+                { title: "Item Name" },
                 { title: "OGID" },
                 { title: "Employee Name" },
                 { title: "Date Assigned" },

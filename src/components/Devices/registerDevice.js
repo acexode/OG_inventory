@@ -25,7 +25,8 @@ const registerReducer = (state, action) =>{
 		}
 		case 'error' : {
 			return {
-				...state,
+                ...state,
+                errMsg: action.msg,
 				error: true
 			}
 		}
@@ -50,13 +51,14 @@ const initalState = {
 	itemName: "", 
 	itemModel: "", 
 	itemSerialNumber: "", 
-	itemQuantity: "", 
+	itemQuantity: "1", 
     itemLocation: "",
     itemColor: "", 
     itemType: "",
 	createdById: "", 
 	error: false,
     success: false,
+    errMsg: '',
     showQuantity: false
 }
 const RegisterDevice = () => {  
@@ -64,32 +66,37 @@ const RegisterDevice = () => {
 	let token = localStorage.getItem('token')
 	console.log(token)
 	const [state, dispatch] = useReducer(registerReducer,initalState)
-	const {itemName,itemModel,itemLocation,itemQuantity, itemType, itemSerialNumber, itemColor, error, success,showQuantity} = state
+	const {itemName,itemModel,itemLocation,itemQuantity, itemType, itemSerialNumber, itemColor, error, success,showQuantity, errMsg} = state
 	const onSubmit = async e =>{
-		e.preventDefault();
-		const newDevice =  {
-		"itemName": itemName,
-		"itemModel": itemModel,
-		"itemLocation": itemLocation,
-        "itemQuantity": itemQuantity,
-        "itemColor": itemColor,
-        "itemType": itemType,
-        "itemSerialNumber": itemSerialNumber,
-		"createdById": getOgid(),
-	}
-		console.log(newDevice)		
-		try{
-			let device = await axios.post('https://shielded-plains-57822.herokuapp.com/devices/',newDevice, {headers: {'Authorization': `Bearer ${token}`}})
-			console.log(device.data)			
-             dispatch({type: 'success'})
-             setTimeout(() =>{
-                 window.location.reload(false)                
-                
-             },1500)
-		}catch(err){
-			console.log(err)
-			dispatch({type: 'error'})
-		}
+        e.preventDefault();
+        if(itemName == '' || itemModel == '' || itemLocation == '', itemQuantity == '' || itemColor == '' || itemType == ''){
+            dispatch({type: 'error', msg: 'All fields required'})
+        }else{
+            const newDevice =  {
+            "itemName": itemName,
+            "itemModel": itemModel,
+            "itemLocation": itemLocation,
+            "itemQuantity": itemQuantity,
+            "itemColor": itemColor,
+            "itemType": itemType,
+            "itemSerialNumber": itemSerialNumber,
+            "createdById": getOgid(),
+        }
+            console.log(newDevice)		
+            try{
+                let device = await axios.post('https://shielded-plains-57822.herokuapp.com/devices/',newDevice, {headers: {'Authorization': `Bearer ${token}`}})
+                console.log(device.data)			
+                 dispatch({type: 'success'})
+                 setTimeout(() =>{
+                     window.location.reload(false)             
+                    
+                 },1500)
+            }catch(err){
+                console.log(err)
+                dispatch({type: 'error', msg: err.response.data.message})
+            }
+
+        }
 	}
     
     
@@ -100,7 +107,7 @@ const RegisterDevice = () => {
 						<div className="row align-items-center">
 							<div className="col">
                             {success && <div className="alert  alert-success" style={{width:'100%'}}>Device Successfully Created</div> }
-							{error &&  <div className="alert  alert-error" style={{width:'100%'}}>Unable to save device</div> }
+							{error &&  <div className="alert  alert-danger" style={{width:'100%'}}>{errMsg}</div> }
 								<h3 className="page-title">Devices</h3>
 								<ul className="breadcrumb">
 									<li className="breadcrumb-item"><a href="/">Dashboard</a></li>
