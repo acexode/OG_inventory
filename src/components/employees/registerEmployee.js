@@ -75,10 +75,10 @@ const RegisterEmployee = () => {
         <div className="page-header">
 						<div className="row align-items-center">
 							<div className="col">
-								<h3 className="page-title">Employee</h3>
+								<h3 className="page-title">User</h3>
 								<ul className="breadcrumb">
 									<li className="breadcrumb-item"><a href="/">Dashboard</a></li>
-									<li className="breadcrumb-item assigned">Register Employee</li>
+									<li className="breadcrumb-item assigned">Register User</li>
 								</ul>
 							</div>						
 						</div>

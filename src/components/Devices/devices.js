@@ -15,7 +15,13 @@ const registerReducer = (state, action) =>{
 		}
 		case 'error' : {
 			return {
-				...state,
+                ...state,
+                errMsg: action.msg,
+                ogId: "", 
+                full_name: "", 
+                itemOutDate: "", 
+                itemQtyGiven: "", 
+                images : null,  
 				error: true
 			}
 		}
@@ -39,7 +45,8 @@ const initalState = {
 	itemOutDate: "", 
     itemQtyGiven: "", 
     images: [],
-	error: false,
+    error: false,
+    errMsg: '',
 	success: false,
 }
 
@@ -55,7 +62,8 @@ const  Devices = () => {
     let token = localStorage.getItem('token')
 
 	const [state, dispatch] = useReducer(registerReducer,initalState)
-	const {ogId,full_name,itemOutDate,itemQtyGiven, images, error, success} = state
+    const {ogId,full_name,itemOutDate,itemQtyGiven, images, error, success, errMsg} = state
+    
 	const assignDevice = async e =>{
 		e.preventDefault();
 		const assignInfo =  {
@@ -73,9 +81,17 @@ const  Devices = () => {
 			console.log(device.data)			
              dispatch({type: 'success'})
              setAssign(true)
+             setTimeout(() =>{               
+                $('#AssignDevice').modal('toggle')
+                window.location.reload();
+            }, 1500)
 		}catch(error){
-			console.log(error.response)
-			dispatch({type: 'error'})
+            console.log(error.response)
+            dispatch({type: 'error', msg:error.response.data.message})
+            setTimeout(()=>{
+                $('#AssignDevice').modal('toggle')
+                window.location.reload(false);
+            },1500)
 		}
     }
 
@@ -91,10 +107,17 @@ const  Devices = () => {
 			let device = await axios.delete('https://shielded-plains-57822.herokuapp.com/devices', {headers: {'Authorization': `Bearer ${token}`}, data:deleteInfo})
 			console.log(device)			
              dispatch({type: 'success'})
-             window.location.reload();
+             setTimeout(() =>{               
+                $('#exampleModal').modal('toggle')
+                window.location.reload();
+            }, 1500)
 		}catch(error){
 			console.log(error.response)
-			dispatch({type: 'error'})
+            dispatch({type: 'error'})
+            setTimeout(() =>{               
+                $('#exampleModal').modal('toggle')
+                window.location.reload();
+            }, 1500)
 		}
     }
 
@@ -113,8 +136,16 @@ const  Devices = () => {
             let device = await axios.post('https://shielded-plains-57822.herokuapp.com/devices/upload',formData, {headers: {'Authorization': `Bearer ${token}`}})
             console.log(device)			
              dispatch({type: 'success'})
+             setTimeout(() =>{               
+                $('#newDevice').modal('toggle')
+                window.location.reload();
+            }, 1500)
         }catch(error){
             console.log(error.response)
+            setTimeout(() =>{               
+                $('#newDevice').modal('toggle')
+                window.location.reload();
+            }, 1500)
 			dispatch({type: 'error'})
         }
       }
@@ -208,14 +239,14 @@ const  Devices = () => {
             </div>
 
             <div className="row">
-            <div class="modal fade" id="newDevice" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-                <div class="modal-dialog">
-                <div class="modal-content">
-                <div class="modal-header">
+            <div className="modal fade" id="newDevice" tabIndex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                <div className="modal-dialog">
+                <div className="modal-content">
+                <div className="modal-header">
                         Upload Images
                     </div>
-                    <div class="modal-body">
-                    <form enctype="multipart/form-data"  onSubmit={uploadDevice} style={{marginTop:"30px" }}>
+                    <div className="modal-body">
+                    <form encType="multipart/form-data"  onSubmit={uploadDevice} style={{marginTop:"30px" }}>
                     <div className="col-md-6 mt-2" >
                                     <div className="form-group">
                                         <label htmlFor="">Upload Image</label>
@@ -231,8 +262,8 @@ const  Devices = () => {
 									</div>
                     </form>
                     </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                    <div className="modal-footer">
+                        <button type="button" className="btn btn-default" data-dismiss="modal">Cancel</button>
                     </div>
             </div>
     </div>
@@ -244,14 +275,14 @@ const  Devices = () => {
 
 
             <div className="row">
-            <div class="modal fade" id="viewModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-    <div class="modal-content">
-                    <div class="modal-header">
+            <div className="modal fade" id="viewModal" tabIndex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div className="modal-dialog">
+    <div className="modal-content">
+                    <div className="modal-header">
                         View Device Details
                     </div>
-                    <div class="modal-body">
-                        <table class="table table-striped">
+                    <div className="modal-body">
+                        <table className="table table-striped">
                         <tbody>
                             <tr>
                             <th scope="row">Name</th>
@@ -285,8 +316,8 @@ const  Devices = () => {
                         </table>
  
                     </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                    <div className="modal-footer">
+                        <button type="button" className="btn btn-default" data-dismiss="modal">Cancel</button>
                     </div>
             </div>
     </div>
@@ -297,20 +328,20 @@ const  Devices = () => {
 
             
             <div className="row">                
-            <div className="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="AssignDeviceLabel" aria-hidden="true">
-            <div class="modal-dialog">
+            <div className="modal fade" id="exampleModal" tabIndex="-1" role="dialog" aria-labelledby="AssignDeviceLabel" aria-hidden="true">
+            <div className="modal-dialog">
             {success && <div className="alert  alert-success" style={{width:'100%'}}>Device Successfully deleted</div> }
 				{error &&  <div className="alert  alert-danger" style={{width:'100%'}}>Unable to delete device</div> }
-                <div class="modal-content">
-                    <div class="modal-header">
+                <div className="modal-content">
+                    <div className="modal-header">
                         Delete Device
                     </div>
-                    <div class="modal-body">
+                    <div className="modal-body">
                         Are you sure you want to delete <b>{selectDevice[0]}</b>
                     </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-                        <button onClick={deleteDevice} class="btn btn-danger btn-ok">Delete</button>
+                    <div className="modal-footer">
+                        <button type="button" className="btn btn-default" data-dismiss="modal">Cancel</button>
+                        <button onClick={deleteDevice} className="btn btn-danger btn-ok">Delete</button>
                     </div>
                 </div>
             </div>
@@ -319,10 +350,10 @@ const  Devices = () => {
 
 
             <div className="row">                
-            <div className="modal fade" id="AssignDevice" tabindex="-1" role="dialog" aria-labelledby="AssignDeviceLabel" aria-hidden="true">
+            <div className="modal fade" id="AssignDevice" tabIndex="-1" role="dialog" aria-labelledby="AssignDeviceLabel" aria-hidden="true">
             <div className="modal-dialog" role="document">
             {success && <div className="alert  alert-success" style={{width:'100%'}}>Device Successfully assigned</div> }
-				{error &&  <div className="alert  alert-danger" style={{width:'100%'}}>Unable to assign device</div> }
+				{error &&  <div className="alert  alert-danger" style={{width:'100%'}}>{errMsg}</div> }
                 <div className="modal-content">               
                 <div className="modal-body">
                     <button type="button" className="close" data-dismiss="modal" aria-label="Close">

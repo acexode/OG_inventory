@@ -7,10 +7,21 @@ const registerReducer = (state, action) =>{
 	// eslint-disable-next-line default-case
 	switch(action.type){
 		case 'inputChange' : {
-			return {
-				...state,
-				[action.name]: action.value
-			}
+            console.log(action.name)
+            if(action.name == "itemType" && action.value == "bulk"){
+                return {
+                    ...state,
+                    showQuantity: true,
+                    [action.name]: action.value
+                }
+            }else{
+                return {
+                    ...state,
+                    showQuantity: false,
+                    [action.name]: action.value
+                }
+
+            }
 		}
 		case 'error' : {
 			return {
@@ -45,14 +56,15 @@ const initalState = {
     itemType: "",
 	createdById: "", 
 	error: false,
-	success: false,
+    success: false,
+    showQuantity: false
 }
 const RegisterDevice = () => {  
     let history = useHistory()
 	let token = localStorage.getItem('token')
 	console.log(token)
 	const [state, dispatch] = useReducer(registerReducer,initalState)
-	const {itemName,itemModel,itemLocation,itemQuantity, itemType, itemSerialNumber, itemColor, error, success} = state
+	const {itemName,itemModel,itemLocation,itemQuantity, itemType, itemSerialNumber, itemColor, error, success,showQuantity} = state
 	const onSubmit = async e =>{
 		e.preventDefault();
 		const newDevice =  {
@@ -85,7 +97,7 @@ const RegisterDevice = () => {
 						<div className="row align-items-center">
 							<div className="col">
                             {success && <div className="alert  alert-success" style={{width:'100%'}}>Device Successfully Created</div> }
-							{error &&  <div className="alert  alert-success" style={{width:'100%'}}>Unable to save device</div> }
+							{error &&  <div className="alert  alert-error" style={{width:'100%'}}>Unable to save device</div> }
 								<h3 className="page-title">Devices</h3>
 								<ul className="breadcrumb">
 									<li className="breadcrumb-item"><a href="/">Dashboard</a></li>
@@ -95,8 +107,7 @@ const RegisterDevice = () => {
 						</div>
 					</div>
                     <div className="row">
-                        <div className="col-md-8">
-                              
+                        <div className="col-md-8">                              
                                         
                                         <Fragment>
                                             <div className="card">
@@ -161,18 +172,6 @@ const RegisterDevice = () => {
                                         
                                     </div>
                                 </div>
-                                <div className="col-md-6" >
-                                        <div className="form-group">
-                                        <label htmlFor="">Quantity</label>
-                                        <input type="number"
-                                            value={itemQuantity}
-                                            onChange={e => dispatch({type: 'inputChange', name: 'itemQuantity',value: parseInt(e.currentTarget.value)})} 
-                                            className="form-control" name="quantity" id="" aria-describedby="helpId" placeholder="" />
-                                        
-                                    </div>
-                                </div>
-                                </div>
-                                <div className="row p-3">
                                 <div className="col-md-6 mt-2" >
                                     <div className="form-group">
                                         <label htmlFor="">Type</label>
@@ -181,14 +180,29 @@ const RegisterDevice = () => {
                                         onChange={e => dispatch({type: 'inputChange', name: 'itemType',value: e.currentTarget.value})} 
                                         className="form-control" name="type" id="" placeholder="Please Select an option" aria-describedby="helpId">
                                             <option value="" disabled selected>Select your option</option>
-                                            <option>single</option>
+                                            <option selected>single</option>
                                             <option>bulk</option>
                                         </select>
                                         
                                     </div>
                                 </div>
-                        
-                            </div>                           
+                                </div>
+                                {showQuantity && 
+                                    <div className="row p-3">
+                                    <div className="col-md-6" >
+                                            <div className="form-group">
+                                            <label htmlFor="">Quantity</label>
+                                            <input type="number"
+                                                value={itemQuantity}
+                                                onChange={e => dispatch({type: 'inputChange', name: 'itemQuantity',value: parseInt(e.currentTarget.value)})} 
+                                                className="form-control" name="quantity" id="" aria-describedby="helpId" placeholder="" />
+                                            
+                                        </div>
+                                    </div>
+                                
+                            
+                                </div>                           
+                                }
                         </div>
                                     
                             </Fragment>      

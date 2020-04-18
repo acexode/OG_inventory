@@ -1,7 +1,7 @@
 import React, { useEffect,useState,useContext, useReducer } from 'react'
 import {DeviceContext}  from '../DeviceContext/DeviceContext'
 import axios from "axios";
-import {getUserId} from "../../helpers/userToken"
+import {getUserId, getRole} from "../../helpers/userToken"
 import { Link } from 'react-router-dom';
 const $ = window.$;
 const registerReducer = (state, action) =>{
@@ -15,7 +15,8 @@ const registerReducer = (state, action) =>{
 		}
 		case 'error' : {
 			return {
-				...state,
+                ...state,
+                errMsg: action.msg,
 				error: true
 			}
 		}
@@ -25,7 +26,7 @@ const registerReducer = (state, action) =>{
 				ogId: "", 
                 full_name: "", 
                 error: false,
-                success: false,
+                success: true,
             }
 		}
 	}
@@ -33,23 +34,32 @@ const registerReducer = (state, action) =>{
 const initalState = {
 	ogId: "", 
 	full_name: "", 
-	error: false,
+    error: false,
+    errMsg: '',
 	success: false,
 }
 
 const AssignedDevices = () => {
     const [devices, assignedDevices, unAssignedDevices] = useContext(DeviceContext)
-    console.log(assignedDevices);
-	const [employees, setemployees] = useState([])
-    const allDevices = assignedDevices.map(user => Object.values(user).slice(1))
+    const role = getRole()
+    
+    const [employees, setemployees] = useState([])  
+    const allDevices = assignedDevices.map(user => {
+        let item = []
+        let arr = Object.values(user).slice(2)
+       
+        item.push(user.device_id.itemName, ...arr )
+        return item
+    })
+   
     const [selectDevice, setselectDevice] = useState([])
     const [assigned, setAssign] = useState(false)
-    console.log(allDevices)
-    console.log(selectDevice);
+  
     let token = localStorage.getItem('token')
 	// console.log(token)
 	const [state, dispatch] = useReducer(registerReducer,initalState)
-	const {ogId,full_name,error, success} = state
+    const {ogId,full_name,error, success,errMsg} = state
+    
 	const assignDevice = async e =>{
 		e.preventDefault();
 		const assignInfo =  {
@@ -57,33 +67,51 @@ const AssignedDevices = () => {
 		full_name: full_name,
 		assignId: selectDevice[0]
 	}
-		console.log(assignInfo)	
-		console.log(selectDevice)	
+	
 		try{
 			let device = await axios.post('https://shielded-plains-57822.herokuapp.com/assign//modify',assignInfo, {headers: {'Authorization': `Bearer ${token}`}})
 			console.log(device.data)			
              dispatch({type: 'success'})
-             window.location.reload()
+             setTimeout(() =>{               
+                $('#AssignDevice').modal('toggle')
+                window.location.reload();
+            }, 1500)
+            
 		}catch(error){
 			console.log(error.response)
-			dispatch({type: 'error'})
+            dispatch({type: 'error', msg:error.response.data.message})
+            setTimeout(() =>{               
+                $('#AssignDevice').modal('toggle')
+                window.location.reload();
+            }, 1500)
 		}
     }
 
-    const deleteDevice = async e => {
+    const undoAssignment = async e => {
         e.preventDefault();
+        const device = assignedDevices.filter(e => e.itemId == selectDevice[6])
+        console.log(device)
         const deleteInfo = {
-            assignId: selectDevice[0]
+            assignId: device[0]._id
         }
-        console.log(deleteInfo);
+        console.log(selectDevice);
         try{
 			let device = await axios.post('https://shielded-plains-57822.herokuapp.com/assign/undo', deleteInfo, {headers: {'Authorization': `Bearer ${token}`}})
-			console.log(device)			
+            console.log(device)	
+            setTimeout(() =>{               
+                $('#exampleModal').modal('toggle')
+                window.location.reload(false);
+            }, 1500)		
              dispatch({type: 'success'})
-             window.location.reload();
+             
 		}catch(error){
-			console.log(error.response)
-			dispatch({type: 'error'})
+            console.log(error.response)
+            window.location.reload(false);
+            dispatch({type: 'error', msg:error.response.data.message})
+            setTimeout(() =>{               
+                $('#exampleModal').modal('toggle')
+                window.location.reload();
+            }, 1500)
 		}
     }
     
@@ -108,16 +136,24 @@ const AssignedDevices = () => {
 					<a href="#" class="nav-link text-secondary pl-4 " data-toggle="dropdown" aria-expanded="false"><i class="fa fa-ellipsis-v"></i></a>
                     <div class="dropdown-menu dropdown-menu-right">
                     <a class="dropdown-item" href="#" id="showEdit" data-toggle="modal" data-target="#viewModal">View Details</a>
-                    <a class="dropdown-item" href="#" id="showEdit" data-toggle="modal" data-target="#exampleModal">Delete</a>
+                    <a class="dropdown-item" href="#" id="showEdit" data-toggle="modal" data-target="#exampleModal">Undo Assignment</a>
             <a class="dropdown-item" href="#" id="showAssign" data-toggle="modal" data-target="#AssignDevice">Reassign</a> 
                        
 					</div>
 				</div>`
             } ], 
+            'rowCallback': function(row, data, index){
+				
+				if(data[3]){
+					if(role == "admin"){
+						$(row).find('td:eq(3)').html(`${new Date(data[3]).toDateString()}`)
+					}
+				}
+				
+			}
             
-        } )    
-      
-        console.log(table)
+        } )         
+       
         $('#example tbody #showEdit').on( 'click', function () {               
 			var data = table.row( $(this).parents('tr') ).data();
 			console.log(table.row( $(this).parents('tr') ).index())
@@ -165,14 +201,14 @@ const AssignedDevices = () => {
             </div>
 
             <div className="row">
-            <div class="modal fade" id="viewModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-    <div class="modal-content">
-                    <div class="modal-header">
+            <div className="modal fade" id="viewModal" tabIndex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div className="modal-dialog">
+    <div className="modal-content">
+                    <div className="modal-header">
                         View Device Details
                     </div>
-                    <div class="modal-body">
-                        <table class="table table-striped">
+                    <div className="modal-body">
+                        <table className="table table-striped">
                         <tbody>
                             <tr>
                             <th scope="row">ItemId</th>
@@ -198,8 +234,8 @@ const AssignedDevices = () => {
                         </table>
  
                     </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                    <div className="modal-footer">
+                        <button type="button" className="btn btn-default" data-dismiss="modal">Cancel</button>
                     </div>
             </div>
     </div>
@@ -210,20 +246,20 @@ const AssignedDevices = () => {
 
             
             <div className="row">                
-            <div className="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="AssignDeviceLabel" aria-hidden="true">
-            <div class="modal-dialog">
-            {success && <div className="alert  alert-success" style={{width:'100%'}}>Device Successfully Reassign</div> }
-				{error &&  <div className="alert  alert-danger" style={{width:'100%'}}>Unable to reassign device</div> }
-                <div class="modal-content">
-                    <div class="modal-header">
+            <div className="modal fade" id="exampleModal" tabIndex="-1" role="dialog" aria-labelledby="AssignDeviceLabel" aria-hidden="true">
+            <div className="modal-dialog">
+            {success && <div className="alert  alert-success" style={{width:'100%'}}>Device Successfully Deleted</div> }
+				{error &&  <div className="alert  alert-danger" style={{width:'100%'}}>{errMsg}</div> }
+                <div className="modal-content">
+                    <div className="modal-header">
                         Delete Device
                     </div>
-                    <div class="modal-body">
+                    <div className="modal-body">
                         Are you sure you want to delete <b>{selectDevice[0]}</b>
                     </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-                        <button onClick={deleteDevice} class="btn btn-danger btn-ok">Delete</button>
+                    <div className="modal-footer">
+                        <button type="button" className="btn btn-default" data-dismiss="modal">Cancel</button>
+                        <button onClick={undoAssignment} className="btn btn-danger btn-ok">Delete</button>
                     </div>
                 </div>
             </div>
@@ -232,7 +268,7 @@ const AssignedDevices = () => {
 
 
             <div className="row">                
-            <div className="modal fade" id="AssignDevice" tabindex="-1" role="dialog" aria-labelledby="AssignDeviceLabel" aria-hidden="true">
+            <div className="modal fade" id="AssignDevice" tabIndex="-1" role="dialog" aria-labelledby="AssignDeviceLabel" aria-hidden="true">
             <div className="modal-dialog" role="document">
             {success && <div className="alert  alert-success" style={{width:'100%'}}>Device Successfully assigned</div> }
 				{error &&  <div className="alert  alert-danger" style={{width:'100%'}}>Unable to assign device</div> }

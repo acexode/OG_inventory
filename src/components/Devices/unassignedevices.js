@@ -15,7 +15,8 @@ const registerReducer = (state, action) =>{
 		}
 		case 'error' : {
 			return {
-				...state,
+                ...state,
+                errMsg: action.msg,
 				error: true
 			}
 		}
@@ -27,7 +28,7 @@ const registerReducer = (state, action) =>{
                 itemOutDate: "", 
                 itemQtyGiven: "", 
                 error: false,
-                success: false,
+                success: true,
             }
 		}
 	}
@@ -36,8 +37,9 @@ const initalState = {
 	ogId: "", 
 	full_name: "", 
 	itemOutDate: "", 
-	itemQtyGiven: "", 
-	error: false,
+	itemQtyGiven: "1", 
+    error: false,
+    errMsg: '',
 	success: false,
 }
 
@@ -55,7 +57,8 @@ const UnassignedDevices = () => {
     let token = localStorage.getItem('token')
 	// console.log(token)
 	const [state, dispatch] = useReducer(registerReducer,initalState)
-	const {ogId,full_name,itemOutDate,itemQtyGiven, error, success} = state
+    const {ogId,full_name,itemOutDate,itemQtyGiven, error, success, errMsg} = state
+    
 	const assignDevice = async e =>{
 		e.preventDefault();
 		const assignInfo =  {
@@ -73,7 +76,11 @@ const UnassignedDevices = () => {
 			console.log(device.data)			
              dispatch({type: 'success'})
              setAssign(true)
-             window.location.reload()
+             setTimeout(() =>{               
+                $('#AssignDevice').modal('toggle')
+                  window.location.reload(false)
+
+            }, 1500)
 		}catch(error){
 			console.log(error.response)
 			dispatch({type: 'error'})
@@ -90,9 +97,16 @@ const UnassignedDevices = () => {
 			let device = await axios.delete('https://shielded-plains-57822.herokuapp.com/devices', {headers: {'Authorization': `Bearer ${token}`}, data:deleteInfo})
 			console.log(device)			
              dispatch({type: 'success'})
-             window.location.reload();
+             setTimeout(() =>{               
+                $('#exampleModal').modal('toggle')
+                window.location.reload();
+            }, 1500)
 		}catch(error){
-			console.log(error.response)
+            console.log(error.response)
+            setTimeout(() =>{               
+                $('#exampleModal').modal('toggle')
+                window.location.reload();
+            }, 1500)
 			dispatch({type: 'error'})
 		}
     }
@@ -114,7 +128,8 @@ const UnassignedDevices = () => {
             "columnDefs": [ {
                     "targets": -1,
                     "data": null,
-                    "defaultContent": `<div class="dropdown">
+                    "defaultContent": `
+                    <div class="dropdown">
 					<a href="#" class="nav-link text-secondary pl-4 " data-toggle="dropdown" aria-expanded="false"><i class="fa fa-ellipsis-v"></i></a>
                     <div class="dropdown-menu dropdown-menu-right">
                     <a class="dropdown-item" href="#" id="showEdit" data-toggle="modal" data-target="#viewModal">View Details</a>
@@ -122,7 +137,8 @@ const UnassignedDevices = () => {
             <a class="dropdown-item" href="#" id="showAssign" data-toggle="modal" data-target="#AssignDevice">Assign Device</a> 
                        
 					</div>
-				</div>`
+				</div>
+                    `
             } ], 
             
         } )    
@@ -175,14 +191,14 @@ const UnassignedDevices = () => {
             </div>
 
             <div className="row">
-            <div class="modal fade" id="viewModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-    <div class="modal-content">
-                    <div class="modal-header">
+            <div className="modal fade" id="viewModal" tabIndex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div className="modal-dialog">
+    <div className="modal-content">
+                    <div className="modal-header">
                         View Device Details
                     </div>
-                    <div class="modal-body">
-                        <table class="table table-striped">
+                    <div className="modal-body">
+                        <table className="table table-striped">
                         <tbody>
                             <tr>
                             <th scope="row">Name</th>
@@ -216,8 +232,8 @@ const UnassignedDevices = () => {
                         </table>
  
                     </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                    <div className="modal-footer">
+                        <button type="button" className="btn btn-default" data-dismiss="modal">Cancel</button>
                     </div>
             </div>
     </div>
@@ -228,20 +244,20 @@ const UnassignedDevices = () => {
 
             
             <div className="row">                
-            <div className="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="AssignDeviceLabel" aria-hidden="true">
-            <div class="modal-dialog">
+            <div className="modal fade" id="exampleModal" tabIndex="-1" role="dialog" aria-labelledby="AssignDeviceLabel" aria-hidden="true">
+            <div className="modal-dialog">
             {success && <div className="alert  alert-success" style={{width:'100%'}}>Device Successfully deleted</div> }
 				{error &&  <div className="alert  alert-danger" style={{width:'100%'}}>Unable to delete device</div> }
-                <div class="modal-content">
-                    <div class="modal-header">
+                <div className="modal-content">
+                    <div className="modal-header">
                         Delete Device
                     </div>
-                    <div class="modal-body">
+                    <div className="modal-body">
                         Are you sure you want to delete <b>{selectDevice[0]}</b>
                     </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-                        <button onClick={deleteDevice} class="btn btn-danger btn-ok">Delete</button>
+                    <div className="modal-footer">
+                        <button type="button" className="btn btn-default" data-dismiss="modal">Cancel</button>
+                        <button onClick={deleteDevice} className="btn btn-danger btn-ok">Delete</button>
                     </div>
                 </div>
             </div>
@@ -250,10 +266,10 @@ const UnassignedDevices = () => {
 
 
             <div className="row">                
-            <div className="modal fade" id="AssignDevice" tabindex="-1" role="dialog" aria-labelledby="AssignDeviceLabel" aria-hidden="true">
+            <div className="modal fade" id="AssignDevice" tabIndex="-1" role="dialog" aria-labelledby="AssignDeviceLabel" aria-hidden="true">
             <div className="modal-dialog" role="document">
             {success && <div className="alert  alert-success" style={{width:'100%'}}>Device Successfully assigned</div> }
-				{error &&  <div className="alert  alert-danger" style={{width:'100%'}}>Unable to assign device</div> }
+				{error &&  <div className="alert  alert-danger" style={{width:'100%'}}>{errMsg}</div> }
                 <div className="modal-content">               
                 <div className="modal-body">
                     <button type="button" className="close" data-dismiss="modal" aria-label="Close">

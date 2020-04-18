@@ -1,15 +1,17 @@
 import React,{useState} from 'react'
 import axios from 'axios'
 import {getUser,getUserId,getToken,getUserName,getOgid} from "../../helpers/userToken"
-
-const EditProfile = () => {
+const $ = window.$;
+const EditProfile = ({fullname, role, phone, email}) => {
 	const userId = getUserId()
 	const token = getToken()
 	const userName = getUserName()
 	const ogid = getOgid()
 	console.log(userId)
 
-	const [password, setPassword] = useState('')
+	const [oldpassword, setOldPassword] = useState('')
+	const [newPassword, setNewPassword] = useState('')
+	const [confirmPassword, setConfirmPassword] = useState('')
 	const [message, setMessage] = useState('')
 	const [show, setShow] = useState(false)
 	const [alert_type, setAlertType] = useState('success')
@@ -17,12 +19,12 @@ const EditProfile = () => {
 
 	const handlePasswordChange =(event) =>{
 		const {value} = event.target
-		setPassword(value)
+		// setPassword(value)
 	}
 
 		const handleSubmit=(event)=>{
 			event.preventDefault()
-			if( password === ''){
+			if( oldpassword === '' && newPassword === '' && confirmPassword===''){
 				setShow(true)
 				setTimeout(() =>{
 					setShow(false)
@@ -32,14 +34,20 @@ const EditProfile = () => {
 			}
 			else{
 				let user ={
-					password
+					ogId: ogid,
+					old_password: oldpassword,
+					new_password: newPassword,
+					confirm_password: confirmPassword
 				}
-				axios.post(`https://shielded-plains-57822.herokuapp.com/users/${userId}`, user, {headers: {'Authorization': `Bearer ${token}`}})
+				console.log(user)
+				axios.put(`https://shielded-plains-57822.herokuapp.com/users/change_password`, user, {headers: {'Authorization': `Bearer ${token}`}})
 				.then(res =>{
 					console.log(res)
 					  setShow(true)
 					  setTimeout(() =>{
 						  setShow(false)
+						  $('#exampleModal').modal('toggle')
+
 					  }, 3000)
 					setAlertType("success")
 					setMessage("Profile updated successfully")
@@ -95,8 +103,20 @@ const EditProfile = () => {
 										
 												<div className="col-md-6">
 													<div className="form-group">
-														<label>Password</label>														
-															<input className="form-control " type="text" value={password} onChange={handlePasswordChange} />
+														<label>Old Password</label>														
+															<input className="form-control " type="text" value={oldpassword} onChange={(e) => setOldPassword(e.target.value)} />
+													</div>
+												</div>
+												<div className="col-md-6">
+													<div className="form-group">
+														<label>New Password</label>														
+															<input className="form-control " type="text" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} />
+													</div>
+												</div>
+												<div className="col-md-6">
+													<div className="form-group">
+														<label>Old Password</label>														
+															<input className="form-control " type="text" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} />
 													</div>
 												</div>
 												

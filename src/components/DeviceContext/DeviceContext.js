@@ -22,8 +22,9 @@ const fetchDevices =() =>{
 const fetchAssignedDevices =() =>{
   axios.get("https://shielded-plains-57822.herokuapp.com/assign/all",{headers: {'Authorization': `Bearer ${token}`}})
   .then(res => {
-    console.log(res.data)
+    console.log(res.data)    
     setAssignedDevices(res.data.assigned_devices);
+    fetchDevices()
   }
     )
  }
@@ -33,6 +34,7 @@ const fetchAssignedDevices =() =>{
   .then(res => {
     console.log(res.data)
     setUnassignedDevices(res.data.unassigned_devices);
+    fetchDevices()
   }
     )
  }

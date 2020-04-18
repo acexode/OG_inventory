@@ -36,25 +36,25 @@ const Sidebar = () => {
                     </Link>
                   </li>}  
                   <li>
-                    <Link to="/employee-dashboard">Employee Dashboard</Link>
+                    <Link to="/employee-dashboard">User Dashboard</Link>
                   </li>
                 </ul>
               </li>
               <li className="menu-title">
-                <span>Employees</span>
+                <span>Users</span>
               </li>
               <li className="submenu">
                 <a href="" className="noti-dot">
-                  <i className="la la-user"></i> <span> Employees</span>{" "}
+                  <i className="la la-user"></i> <span> Users</span>{" "}
                   <span className="menu-arrow"></span>
                 </a>
                 <ul style={{ display: "none" }}>
                   <li>
-                    <Link to="/all-employees">All Employees</Link>
+                    <Link to="/all-employees">All  Users</Link>
                   </li>
                   {role === "admin" && (
                     <li>
-                      <Link to="/register-employee">Register Employee</Link>
+                      <Link to="/register-employee">Register User</Link>
                     </li>
                   )}
                  

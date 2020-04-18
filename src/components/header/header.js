@@ -47,13 +47,13 @@ const Header = () =>{
 							</form>
 						</div>
 					</li>	
-					<li class="nav-item dropdown has-arrow main-drop ml-3">
-						<a href="#" class="dropdown-toggle nav-link" data-toggle="dropdown">
-							<span class="user-img"><img src="https://ca.slack-edge.com/TQHUN32CR-URMJF95Q9-g044a9fdcae7-512" alt="" />
-							<span class="status online"></span></span>
+					<li className="nav-item dropdown has-arrow main-drop ml-3">
+						<a href="#" className="dropdown-toggle nav-link" data-toggle="dropdown">
+							<span className="user-img"><img src="https://ca.slack-edge.com/TQHUN32CR-URMJF95Q9-g044a9fdcae7-512" alt="" />
+							<span className="status online"></span></span>
 							<span>{role[0].toUpperCase() + role.slice(1)}</span>
 						</a>
-						<div class="dropdown-menu">
+						<div className="dropdown-menu">
 						<Link className="dropdown-item" to="/profile">My Profile</Link>
 							<a onClick={logout} className="dropdown-item" href="#">Logout</a>
 						</div>
