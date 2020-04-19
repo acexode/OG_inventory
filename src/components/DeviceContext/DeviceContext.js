@@ -8,6 +8,7 @@ export const DeviceProvider = (props) => {
   const token = getToken()
 const [devices, setDevices] = useState([])
 const [assignedDevices, setAssignedDevices] = useState([])
+const [assignments, setassignments] = useState([])
 const [unAssignedDevices, setUnassignedDevices] = useState([])
 
 const fetchDevices =() =>{
@@ -20,10 +21,19 @@ const fetchDevices =() =>{
 }
 
 const fetchAssignedDevices =() =>{
-  axios.get("https://shielded-plains-57822.herokuapp.com/assign/all",{headers: {'Authorization': `Bearer ${token}`}})
+  axios.get("https://shielded-plains-57822.herokuapp.com/assign/assigned_devices",{headers: {'Authorization': `Bearer ${token}`}})
   .then(res => {
     console.log(res.data)    
     setAssignedDevices(res.data.assigned_devices);
+    fetchDevices()
+  }
+    )
+ }
+const fetchAssigments =() =>{
+  axios.get("https://shielded-plains-57822.herokuapp.com/assign/all",{headers: {'Authorization': `Bearer ${token}`}})
+  .then(res => {
+    console.log(res.data)    
+    setassignments(res.data.assigned_devices);
     fetchDevices()
   }
     )
@@ -42,10 +52,11 @@ useEffect(()=>{
   fetchDevices()
   fetchAssignedDevices()
   fetchUnassignedDevices()
+  fetchAssigments()
 },[])
 
 
 
-  return <DeviceContext.Provider value={[devices, assignedDevices, unAssignedDevices]}>{props.children}</DeviceContext.Provider>;
+  return <DeviceContext.Provider value={[devices, assignedDevices, unAssignedDevices,assignments]}>{props.children}</DeviceContext.Provider>;
 };
 // 

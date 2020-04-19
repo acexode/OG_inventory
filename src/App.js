@@ -19,6 +19,7 @@ import AuthGuard from './components/login/AuthGuard';
 import {EmployeeProvider} from  "./components/EmployeeContext/EmployeeContext"
 import {DeviceProvider} from  "./components/DeviceContext/DeviceContext"
 import { getUser, getToken } from './helpers/userToken';
+import Assignments from './components/Devices/assignments';
 
 
 const Main = withRouter(({ location }) => {
@@ -41,6 +42,7 @@ const Main = withRouter(({ location }) => {
           <AuthGuard exact path="/register-device" component={RegisterDevice} />
           <AuthGuard exact path="/devices" component={Devices} />
           <AuthGuard exact path="/assignedevices" component={AssignedDevices} />
+          <AuthGuard exact path="/assignments" component={Assignments} />
           <AuthGuard exact path="/unassignedevices" component={UnassignedDevices} />
           <AuthGuard path="/all-employees" component={Employees} />
           <AuthGuard path="/admin" component={adminEmployees} />       

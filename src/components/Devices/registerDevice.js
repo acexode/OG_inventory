@@ -14,7 +14,15 @@ const registerReducer = (state, action) =>{
                     showQuantity: true,
                     [action.name]: action.value
                 }
-            }else{
+            }
+            else if(action.name == "itemType" && action.value == "single"){
+                return {
+                    ...state,
+                    showQuantity: false,
+                    [action.name]: action.value
+                }
+            }
+            else{
                 return {
                     ...state,
                     // showQuantity: false,
@@ -72,11 +80,17 @@ const RegisterDevice = () => {
         if(itemName == '' || itemModel == '' || itemLocation == '', itemQuantity == '' || itemColor == '' || itemType == ''){
             dispatch({type: 'error', msg: 'All fields required'})
         }else{
+            let quantity
+            if(itemType == 'single'){
+                quantity = 1
+            }else{
+                quantity = itemQuantity
+            }
             const newDevice =  {
             "itemName": itemName,
             "itemModel": itemModel,
             "itemLocation": itemLocation,
-            "itemQuantity": itemQuantity,
+            "itemQuantity": quantity,
             "itemColor": itemColor,
             "itemType": itemType,
             "itemSerialNumber": itemSerialNumber,

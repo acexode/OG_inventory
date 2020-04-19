@@ -39,15 +39,17 @@ const initalState = {
 	success: false,
 }
 
-const AssignedDevices = () => {
+const Assignments = () => {
     const [devices, assignedDevices, unAssignedDevices,assignments] = useContext(DeviceContext)
     const role = getRole()
     
     const [employees, setemployees] = useState([])  
-    const allDevices = assignedDevices.map(user => {
-        let devices = Object.values(user).slice(1)
-        // devices.splice(3,1)
-        return devices
+    const allDevices = assignments.map(user => {
+        let item = []
+        let arr = Object.values(user).slice(2)
+       
+        item.push(user.device_id.itemName, ...arr )
+        return item
     })
     console.log(assignedDevices)
    
@@ -121,11 +123,10 @@ const AssignedDevices = () => {
             data: allDevices,
             columns: [
                 { title: "Item Name" },
-                { title: "Model" },
-                { title: "Location" },
-				{ title: "Quantity Left" },
-                { title: "Color" },
-                { title: "Type" },
+                { title: "OGID" },
+                { title: "Employee Name" },
+                { title: "Date Assigned" },
+				{ title: "Quantity" },
 				{title: "Action"}	
             ],
             "bDestroy": true,
@@ -141,8 +142,16 @@ const AssignedDevices = () => {
                        
 					</div>
 				</div>`
-            } ]
-           
+            } ], 
+            'rowCallback': function(row, data, index){
+				
+				if(data[3]){
+					if(role == "admin"){
+						$(row).find('td:eq(3)').html(`${new Date(data[3]).toDateString()}`)
+					}
+				}
+				
+			}
             
         } )         
        
@@ -309,4 +318,4 @@ const AssignedDevices = () => {
     )
 }
 
-export default AssignedDevices
+export default Assignments

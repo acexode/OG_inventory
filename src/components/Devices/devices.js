@@ -51,31 +51,13 @@ const initalState = {
 }
 
 const  Devices = () => {
-    const [devices,  assignedDevices, unAssignedDevices] = useContext(DeviceContext)
-    let allAssigned = assignedDevices.map(e => {
-        let arr  = []
-        let dev = Object.values(e.device_id).slice(1)
-        dev = dev.slice(0,5)
-        dev.push("Assigned")
-        dev.push(e.device_id.itemId)
-        return dev
-    })
-    let allUnassigned = unAssignedDevices.map(e => {
-        let arr  = []
-        let dev = Object.values(e).slice(1)
-        dev = dev.slice(0,5)
-        dev.push("Unassigned")
-        dev.push(e.itemId)
-        return dev
-    })
-    console.log(allAssigned);
-    console.log(allUnassigned);
+    const [devices,  assignedDevices, unAssignedDevices] = useContext(DeviceContext) 
 	const [employees, setemployees] = useState([])
-    const allDevices = [...allAssigned, ...allUnassigned]
-    // const allDevices = devices.map(user => Object.values(user).slice(1))
+    // const allDevices = [...allAssigned, ...allUnassigned]
+    const allDevices = devices.map(user => Object.values(user).slice(1))
     const [selectDevice, setselectDevice] = useState([])
     const [assigned, setAssign] = useState(false)
-    console.log(allDevices)
+    console.log(devices)
     let token = localStorage.getItem('token')
 
 	const [state, dispatch] = useReducer(registerReducer,initalState)
@@ -89,7 +71,7 @@ const  Devices = () => {
 		itemOutDate: itemOutDate,
         itemQtyGiven: itemQtyGiven,
 		givenById: getUserId(),
-		itemId: selectDevice[6]
+		itemId: selectDevice[8]
 	}
 		console.log(assignInfo)	
 		console.log(selectDevice)	
@@ -117,7 +99,7 @@ const  Devices = () => {
     const deleteDevice = async e => {
         e.preventDefault();
         const deleteInfo = {
-            itemId: selectDevice[6]
+            itemId: selectDevice[8]
         }
         console.log(deleteInfo);
         try{
@@ -142,8 +124,8 @@ const  Devices = () => {
       const uploadDevice = async e => {
         e.preventDefault();
         const formData = new FormData();
-        formData.append('deviceId', selectDevice[6])
-        console.log(selectDevice[6]);
+        formData.append('deviceId', selectDevice[8])
+        console.log(selectDevice[8]);
         console.log(images);
         for(var i = 0; i<images.length; i++) {
             formData.append('deviceImage', images[i])
@@ -176,22 +158,12 @@ const  Devices = () => {
                 { title: "Name" },
                 { title: "Model" },
                 { title: "Location" },
-                { title: "Quantity" },
+                { title: "Quantity Left" },
 				{ title: "Color" },
-				{ title: "Status" },
+				{ title: "Type" },
 				{title: "Action"}	
             ],
-            "bDestroy": true,
-            'rowCallback': function(row, data, index){
-				console.log(data[5])
-				if(data[5] == "Assigned"){
-					$(row).find('td:eq(5)').html(`<span class="badge bg-inverse-danger">Assigned</span>`);
-					
-				}else {
-					$(row).find('td:eq(5)').html(`<span class="badge bg-inverse-success">Not Assigned</span>`);;
-                }
-            },
-
+            "bDestroy": true,           
             "columnDefs": [ {
                     "targets": -1,
                     "data": null,
@@ -331,12 +303,12 @@ const  Devices = () => {
                             <td>{selectDevice[4]}</td>
                             </tr>
                             <tr>
-                            <th scope="row">Status</th>
+                            <th scope="row">Type</th>
                             <td>{selectDevice[5]}</td>
                             </tr>
                             <tr>
                             <th scope="row">Device Id</th>
-                            <td>{selectDevice[6]}</td>
+                            <td>{selectDevice[8]}</td>
                             </tr>
                         </tbody>
                         </table>

@@ -68,6 +68,7 @@ const Sidebar = () => {
                 <ul style={{ display: "none" }}>
                   <li>
                     <Link to="/devices">All Devices</Link>
+                    <Link to="/assignments">Assignments</Link>
                     <Link to="/assignedevices">Assigned Devices</Link>
                     <Link to="/unassignedevices">Unassigned Devices</Link>
                   </li>
